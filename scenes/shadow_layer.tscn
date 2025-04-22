@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvn3eosahxow0"]
+
+[ext_resource type="Texture2D" uid="uid://c3ko5haqw86je" path="res://icon.svg" id="1_6o7y4"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_1ukh2"]
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s4wej"]
+texture = ExtResource("1_6o7y4")
+2:4/0 = 0
+2:4/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_1ukh2")
+
+[sub_resource type="TileSet" id="TileSet_g6bnr"]
+occlusion_layer_0/light_mask = 3
+sources/0 = SubResource("TileSetAtlasSource_s4wej")
+
+[node name="ShadowLayer" type="TileMapLayer"]
+scale = Vector2(2, 2)
+tile_set = SubResource("TileSet_g6bnr")

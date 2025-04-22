@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://ck34d7nv7nfew"]
+
+[ext_resource type="Script" uid="uid://ld8c0rhqndol" path="res://scripts/upgrade.gd" id="1_a8xqr"]
+[ext_resource type="Texture2D" uid="uid://c2554qrlrbfms" path="res://assets/textures/upgrade.png" id="2_a8xqr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a8xqr"]
+
+[node name="Upgrade" type="Area2D"]
+visibility_layer = 5
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_a8xqr")
+added_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.7, 0.7, 0.7, 1)
+visibility_layer = 5
+scale = Vector2(2, 2)
+texture = ExtResource("2_a8xqr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_a8xqr")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

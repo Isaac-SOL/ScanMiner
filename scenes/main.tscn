@@ -1,0 +1,297 @@
+[gd_scene load_steps=30 format=3 uid="uid://di4lmm00ssq3i"]
+
+[ext_resource type="Script" uid="uid://cqacoi816t208" path="res://scripts/main.gd" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://ernn5pinxlwr" path="res://objects/player_character.tscn" id="1_o5qli"]
+[ext_resource type="Texture2D" uid="uid://c0h6pxpio0an3" path="res://assets/textures/white.png" id="3_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://dteeejg43g0q3" path="res://objects/thermal_scanner.tscn" id="3_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://bfo1mhqkagmm4" path="res://scenes/world_tile_map.tscn" id="4_jyhfs"]
+[ext_resource type="Script" uid="uid://b038wgl6janrt" path="res://scripts/shaker_2d.gd" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://lexfpqm1rjvv" path="res://scripts/lock_rotation.gd" id="4_tefeu"]
+[ext_resource type="Shader" uid="uid://cr0b3pvd7afcx" path="res://shaders_mats/xray_mixer.gdshader" id="6_choun"]
+[ext_resource type="Script" uid="uid://c5lnkq46mcucl" path="res://scripts/point_cloud.gd" id="6_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://bcw3t6f4ey83p" path="res://objects/companion.tscn" id="6_muem4"]
+[ext_resource type="PackedScene" uid="uid://bvn3eosahxow0" path="res://scenes/shadow_layer.tscn" id="7_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://d1quvjctoedr4" path="res://objects/point_2d.tscn" id="7_trceg"]
+[ext_resource type="Shader" uid="uid://cov6b25u02a3j" path="res://shaders_mats/shadow_mixer.gdshader" id="9_85g3d"]
+[ext_resource type="Shader" uid="uid://4cuiis6ma2dk" path="res://shaders_mats/blur13x13_workaround.gdshader" id="9_choun"]
+[ext_resource type="Texture2D" uid="uid://btp8rx8tv4tmi" path="res://assets/textures/companion.png" id="11_dp3eg"]
+[ext_resource type="Shader" uid="uid://brio47wjewewf" path="res://shaders_mats/thermal_mixer.gdshader" id="11_trceg"]
+[ext_resource type="PackedScene" uid="uid://ck34d7nv7nfew" path="res://objects/upgrade.tscn" id="12_0ld40"]
+[ext_resource type="PackedScene" uid="uid://d2hl7ndrm128r" path="res://objects/upgrade_xray.tscn" id="13_gqmmt"]
+[ext_resource type="FontFile" uid="uid://vk8jocl5wcn1" path="res://assets/fonts/Kenney High.ttf" id="13_jkv2x"]
+[ext_resource type="Script" uid="uid://m2gsnj67knaj" path="res://scripts/echo_text_label.gd" id="14_jbj1t"]
+
+[sub_resource type="Environment" id="Environment_choun"]
+background_mode = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_85g3d"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_choun"]
+resource_local_to_scene = true
+shader = ExtResource("9_85g3d")
+shader_parameter/shadow = SubResource("ViewportTexture_85g3d")
+
+[sub_resource type="Gradient" id="Gradient_choun"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ya4ey"]
+noise_type = 0
+frequency = 1.0
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eb6dy"]
+width = 640
+height = 360
+color_ramp = SubResource("Gradient_choun")
+noise = SubResource("FastNoiseLite_ya4ey")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a8y0u"]
+resource_local_to_scene = true
+shader = ExtResource("6_choun")
+shader_parameter/shadow = SubResource("ViewportTexture_85g3d")
+shader_parameter/noise = SubResource("NoiseTexture2D_eb6dy")
+shader_parameter/strength = 2.0
+shader_parameter/emitter_position = Vector2(0.5, 0.5)
+shader_parameter/mult_at_edge = 4.0
+shader_parameter/screen_edge = 0.45
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jkv2x"]
+resource_local_to_scene = true
+shader = ExtResource("11_trceg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tipki"]
+shader = ExtResource("9_choun")
+
+[node name="Main" type="Node"]
+script = ExtResource("1_jyhfs")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_choun")
+
+[node name="World" type="Node2D" parent="."]
+unique_name_in_owner = true
+visibility_layer = 13
+texture_filter = 1
+
+[node name="PlayerCharacter" parent="World" instance=ExtResource("1_o5qli")]
+unique_name_in_owner = true
+z_index = 2
+
+[node name="ThermalBlackBG" type="Sprite2D" parent="World/PlayerCharacter"]
+modulate = Color(0, 0, 0, 1)
+light_mask = 0
+visibility_layer = 4
+z_index = -10
+scale = Vector2(25, 25)
+texture = ExtResource("3_tbgi4")
+script = ExtResource("4_tefeu")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="World/PlayerCharacter"]
+remote_path = NodePath("../../../SubViewport/WorldShadow/ShadowReceiver")
+update_rotation = false
+update_scale = false
+
+[node name="Companion" parent="World" instance=ExtResource("6_muem4")]
+unique_name_in_owner = true
+z_index = 1
+position = Vector2(176, 688)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="World/Companion"]
+remote_path = NodePath("../../../SubViewport/WorldShadow/CompanionLight")
+update_rotation = false
+update_scale = false
+
+[node name="ThermalScanner" parent="World/Companion" node_paths=PackedStringArray("point_cloud") instance=ExtResource("3_ya4ey")]
+unique_name_in_owner = true
+point_cloud = NodePath("../../PointCloud")
+
+[node name="Shaker2D" type="Node2D" parent="World" node_paths=PackedStringArray("target_node")]
+unique_name_in_owner = true
+script = ExtResource("4_tbgi4")
+target_node = NodePath("../PlayerCharacter")
+metadata/_custom_type_script = "uid://b038wgl6janrt"
+
+[node name="MainCamera" type="Camera2D" parent="World/Shaker2D"]
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="World/Shaker2D/MainCamera"]
+remote_path = NodePath("../../../../SubViewport/WorldShadow/ShadowCamera")
+
+[node name="TileMapLayer" parent="World" node_paths=PackedStringArray("shadow_layer", "light_source_parent") instance=ExtResource("4_jyhfs")]
+unique_name_in_owner = true
+shadow_layer = NodePath("../../SubViewport/ShadowLayer")
+update_debug_layer = true
+light_source_parent = NodePath("../../SubViewport/WorldShadow/Lightsources")
+
+[node name="PointCloud" type="Node2D" parent="World"]
+visibility_layer = 4
+script = ExtResource("6_eb6dy")
+point2d = ExtResource("7_trceg")
+
+[node name="CompanionLab" type="Node2D" parent="World"]
+
+[node name="Sprite2D" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(249, 725)
+rotation = -0.254922
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="Sprite2D3" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(234, 711)
+rotation = -0.633222
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="Sprite2D4" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(274, 722)
+rotation = 0.20262
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="Sprite2D5" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(131, 722)
+rotation = 0.656312
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="Sprite2D6" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(100, 721)
+rotation = 0.141824
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="Sprite2D2" type="Sprite2D" parent="World/CompanionLab"]
+modulate = Color(0.3, 0.3, 0.3, 1)
+visibility_layer = 5
+position = Vector2(217, 724)
+rotation = 0.377461
+scale = Vector2(2, 2)
+texture = ExtResource("11_dp3eg")
+
+[node name="UpgradeThermal" parent="World" node_paths=PackedStringArray("companion") instance=ExtResource("12_0ld40")]
+position = Vector2(-419, -305)
+companion = NodePath("../Companion")
+
+[node name="UpgradeXray" parent="World" node_paths=PackedStringArray("companion") instance=ExtResource("13_gqmmt")]
+position = Vector2(-768, 782)
+companion = NodePath("../Companion")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ShadowMixer" type="ColorRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_choun")
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="XRayMixer" type="ColorRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_a8y0u")
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="ThermalMixer" type="ColorRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+visibility_layer = 4
+material = SubResource("ShaderMaterial_jkv2x")
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="EchoTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(320, 180)
+theme_override_colors/default_color = Color(0, 0.686275, 0.0784314, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_offset_x = 1
+theme_override_fonts/normal_font = ExtResource("13_jkv2x")
+text = "Lorem Ipsum Dolor Sit Amet"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_jbj1t")
+fade_time = 1.5
+stay_time = 4.0
+min_time_diff = 2.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+canvas_item_default_texture_filter = 0
+canvas_cull_mask = 4293918722
+size = Vector2i(320, 180)
+
+[node name="WorldShadow" type="Node2D" parent="SubViewport"]
+
+[node name="ShadowCamera" type="Camera2D" parent="SubViewport/WorldShadow"]
+light_mask = 2
+visibility_layer = 2
+zoom = Vector2(0.5, 0.5)
+
+[node name="ShadowReceiver" type="Sprite2D" parent="SubViewport/WorldShadow"]
+top_level = true
+light_mask = 2
+visibility_layer = 2
+scale = Vector2(25, 25)
+texture = ExtResource("3_tbgi4")
+script = ExtResource("4_tefeu")
+
+[node name="BlackLight" type="PointLight2D" parent="SubViewport/WorldShadow/ShadowReceiver"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1.6, -1.6)
+scale = Vector2(0.04, 0.04)
+blend_mode = 1
+range_item_cull_mask = 2
+texture = ExtResource("3_tbgi4")
+texture_scale = 25.0
+script = ExtResource("4_tefeu")
+
+[node name="CompanionLight" type="PointLight2D" parent="SubViewport/WorldShadow"]
+visible = false
+light_mask = 2
+visibility_layer = 2
+position = Vector2(176, 688)
+range_item_cull_mask = 2
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 1)
+shadow_item_cull_mask = 2
+texture = ExtResource("3_tbgi4")
+texture_scale = 25.0
+script = ExtResource("4_tefeu")
+
+[node name="Lightsources" type="Node2D" parent="SubViewport/WorldShadow"]
+
+[node name="ShadowLayer" parent="SubViewport" instance=ExtResource("7_o6xl0")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="SubViewport"]
+
+[node name="Decimator" type="ColorRect" parent="SubViewport/CanvasLayer"]
+light_mask = 0
+visibility_layer = 2
+material = SubResource("ShaderMaterial_tipki")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="activated" from="World/Companion" to="." method="_on_companion_activated"]
+[connection signal="activated" from="World/Companion" to="SubViewport/WorldShadow/CompanionLight" method="set_visible" binds= [true]]
+[connection signal="companion_arrows_set" from="World/TileMapLayer" to="World/Companion" method="activate"]
+[connection signal="echo_hit" from="World/TileMapLayer" to="CanvasLayer/EchoTextLabel" method="display_text"]

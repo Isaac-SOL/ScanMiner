@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2hl7ndrm128r"]
+
+[ext_resource type="PackedScene" uid="uid://ck34d7nv7nfew" path="res://objects/upgrade.tscn" id="1_irxoe"]
+[ext_resource type="Texture2D" uid="uid://5fv0kcix1em1" path="res://assets/textures/upgrade_xray.png" id="2_l6fng"]
+
+[node name="UpgradeXray" instance=ExtResource("1_irxoe")]
+added_mode = 1
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_l6fng")

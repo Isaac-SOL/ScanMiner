@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcw3t6f4ey83p"]
+
+[ext_resource type="Script" uid="uid://dsvvfnflwguag" path="res://scripts/companion.gd" id="1_iaa6a"]
+[ext_resource type="Texture2D" uid="uid://btp8rx8tv4tmi" path="res://assets/textures/companion.png" id="1_xp6ly"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bntxm"]
+radius = 4.0
+
+[node name="Companion" type="CharacterBody2D"]
+visibility_layer = 5
+collision_layer = 2
+motion_mode = 1
+wall_min_slide_angle = 0.0349066
+script = ExtResource("1_iaa6a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.7, 0.7, 0.7, 1)
+visibility_layer = 5
+scale = Vector2(2, 2)
+texture = ExtResource("1_xp6ly")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bntxm")
