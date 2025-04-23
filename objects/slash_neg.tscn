@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://d316xbai8j4q0"]
+
+[ext_resource type="Script" uid="uid://cxm1dim2n2lyw" path="res://scripts/slash.gd" id="1_ss2ib"]
+[ext_resource type="Texture2D" uid="uid://cr0hteoc5tg8x" path="res://assets/textures/slash.png" id="2_pa688"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_am03g"]
+radius = 2.0
+height = 38.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij1xi"]
+radius = 7.0
+height = 38.0
+
+[node name="SlashNeg" type="Area2D"]
+visibility_layer = 5
+collision_layer = 4
+collision_mask = 16
+script = ExtResource("1_ss2ib")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visibility_layer = 5
+scale = Vector2(1.4375, 1.4375)
+texture = ExtResource("2_pa688")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4, -1)
+shape = SubResource("CapsuleShape2D_am03g")
+
+[node name="ScanPoints" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Marker2D" type="Marker2D" parent="ScanPoints"]
+position = Vector2(-4, -1)
+
+[node name="Marker2D2" type="Marker2D" parent="ScanPoints"]
+position = Vector2(-4, -19)
+
+[node name="Marker2D3" type="Marker2D" parent="ScanPoints"]
+position = Vector2(-4, 17)
+
+[node name="Marker2D4" type="Marker2D" parent="ScanPoints"]
+position = Vector2(-4, 8)
+
+[node name="Marker2D5" type="Marker2D" parent="ScanPoints"]
+position = Vector2(-4, -10)
+
+[node name="CompanionDetector" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CompanionDetector"]
+position = Vector2(-4, -1)
+shape = SubResource("CapsuleShape2D_ij1xi")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="CompanionDetector" to="." method="_on_companion_detector_body_entered"]

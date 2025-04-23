@@ -5,6 +5,7 @@ enum VisionMode { NORMAL, XRAY, THERMAL }
 var vision_mode := VisionMode.NORMAL
 var has_companion: bool = false
 var xray_shader: ShaderMaterial
+var negative_world: bool = false
 
 func _ready() -> void:
 	# Hide shadow receiver
@@ -36,19 +37,38 @@ func _process(delta: float) -> void:
 
 func set_vision(new_mode: VisionMode):
 	vision_mode = new_mode
-	match vision_mode:
-		VisionMode.NORMAL:
-			get_tree().root.get_viewport().canvas_cull_mask = 1
-			%XRayMixer.visible = false
-			%ThermalScanner.set_active(false)
-		VisionMode.XRAY:
-			get_tree().root.get_viewport().canvas_cull_mask = 1 | 8
-			%XRayMixer.visible = true
-			%ThermalScanner.set_active(false)
-		VisionMode.THERMAL:
-			get_tree().root.get_viewport().canvas_cull_mask = 4
-			%XRayMixer.visible = false
-			%ThermalScanner.set_active(true)
+	if negative_world:
+		get_tree().root.get_viewport().canvas_cull_mask = 1
+		%XRayMixer.visible = false
+		%ThermalScanner.set_active(false)
+		%NegativeMixer.visible = true
+	else:
+		%NegativeMixer.visible = false
+		match vision_mode:
+			VisionMode.NORMAL:
+				get_tree().root.get_viewport().canvas_cull_mask = 1
+				%XRayMixer.visible = false
+				%ThermalScanner.set_active(false)
+			VisionMode.XRAY:
+				get_tree().root.get_viewport().canvas_cull_mask = 1 | 8
+				%XRayMixer.visible = true
+				%ThermalScanner.set_active(false)
+			VisionMode.THERMAL:
+				get_tree().root.get_viewport().canvas_cull_mask = 4
+				%XRayMixer.visible = false
+				%ThermalScanner.set_active(true)
 
 func _on_companion_activated() -> void:
 	has_companion = true
+
+func enter_negative_world():
+	negative_world = true
+	set_vision(vision_mode)
+	Singletons.player.enter_negative_world()
+	%Companion.enter_negative_world()
+
+func exit_negative_world():
+	negative_world = false
+	set_vision(VisionMode.NORMAL)
+	Singletons.player.exit_negative_world()
+	%Companion.exit_negative_world()

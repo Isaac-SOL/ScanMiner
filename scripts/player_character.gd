@@ -2,6 +2,7 @@ class_name PlayerCharacter extends CharacterBody2D
 
 @export var move_speed: float = 10
 @export var slash_object: PackedScene
+@export var neg_slash_object: PackedScene
 @export var slash_distance: float = 20
 @export var slash_cooldown: float = 0.5
 
@@ -35,7 +36,13 @@ func get_move_vector() -> Vector2:
 		return move_vec
 
 func slash(dir: Vector2):
-	var new_slash: Slash = slash_object.instantiate()
+	var new_slash: Node2D = neg_slash_object.instantiate() if Singletons.main.negative_world else slash_object.instantiate()
 	Singletons.world.add_child(new_slash)
 	new_slash.global_position = global_position + dir.normalized() * slash_distance
 	new_slash.global_rotation = global_rotation
+
+func enter_negative_world():
+	collision_mask = 16
+
+func exit_negative_world():
+	collision_mask = 1

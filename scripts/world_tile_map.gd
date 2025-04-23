@@ -16,22 +16,31 @@ enum ConduitInfo {
 signal echo_hit(text: String)
 
 @export var shadow_layer: TileMapLayer
-@export var conduit_debug_layer: TileMapLayer
 @export var update_debug_layer: bool = false
 @export var light_source_parent: Node2D
 @export var light_source_object: PackedScene
 
 var hp_grid: Array[Array] = []
+var neg_hp_grid: Array[Array] = []
 var power_grid: Array[Array] = []
 var rect_offset: Vector2i
 var rect_size: Vector2i
 var companion_activated: bool = false
+
+const NORMAL_ARROW_LEFT_POS := Vector2i(15, 2)
+const NORMAL_ARROW_RIGHT_POS := Vector2i(15, 0)
+const SHADOW_OCCLUDER_POS := Vector2i(2, 4)
+const XRAY_FRAGILE_POS := Vector2i(12, 0)
+const XRAY_SOURCE_POS := Vector2i(12, 1)
+const NEGATIVE_BREAKABLE_POS := Vector2i(12, 0)
+const NEGATIVE_UNBREAKABLE_POS := Vector2i(7, 0)
 
 func _ready() -> void:
 	rect_offset = get_used_rect().position
 	rect_size = get_used_rect().size
 	for x in rect_size.x:
 		hp_grid.append([] as Array[int])
+		neg_hp_grid.append([] as Array[int])
 		power_grid.append([] as Array[ConduitInfo])
 		for y in rect_size.y:
 			var map_pos := grid_to_map(Vector2i(x, y))
@@ -42,21 +51,30 @@ func _ready() -> void:
 				if update_debug_layer:
 					update_debug_layer_at(map_pos, data.get_custom_data("conduit") as ConduitInfo)
 				if data.get_occluder_polygons_count(0) > 0:
-					shadow_layer.set_cell(map_pos, 0, Vector2i(2, 4))
+					shadow_layer.set_cell(map_pos, 0, SHADOW_OCCLUDER_POS)
 				if data.get_custom_data("light"):
 					var new_light: PointLight2D = light_source_object.instantiate()
 					light_source_parent.add_child(new_light)
 					new_light.global_position = to_global(map_to_local(map_pos))
 				if data.get_custom_data("fragile"):
-					%XRayLayer.set_cell(map_pos, 0, Vector2i(12, 0))
+					%XRayLayer.set_cell(map_pos, 0, XRAY_FRAGILE_POS)
+				if data.get_custom_data("hidden_source"):
+					%XRayLayer.set_cell(map_pos, 0, XRAY_SOURCE_POS)
+				if data.get_custom_data("bifull"):
+					%NegativeLayer.set_cell(map_pos, 0, NEGATIVE_UNBREAKABLE_POS)
+					neg_hp_grid[x].append(1000)
+				else:
+					neg_hp_grid[x].append(0)
 			else:
 				hp_grid[x].append(0)
+				neg_hp_grid[x].append(1)
 				power_grid[x].append(ConduitInfo.EMPTY)
+				%NegativeLayer.set_cell(map_pos, 0, NEGATIVE_BREAKABLE_POS)
 
 func _process(delta: float) -> void:
 	if not companion_activated:
-		if get_cell_atlas_coords(Vector2i(2, 21)) == Vector2i(15, 2) \
-		   and get_cell_atlas_coords(Vector2i(8, 21)) == Vector2i(15, 0):
+		if get_cell_atlas_coords(Vector2i(2, 21)) == NORMAL_ARROW_LEFT_POS \
+		   and get_cell_atlas_coords(Vector2i(8, 21)) == NORMAL_ARROW_RIGHT_POS:
 			companion_arrows_set.emit()
 			companion_activated = true
 
@@ -82,6 +100,15 @@ func set_hp(map_pos: Vector2i, hp: int):
 	assert(coords_in_grid(grid_pos))
 	hp_grid[grid_pos.x][grid_pos.y] = hp
 
+func get_neg_hp(map_pos: Vector2i) -> int:
+	var grid_pos := map_to_grid(map_pos)
+	return neg_hp_grid[grid_pos.x][grid_pos.y] if coords_in_grid(grid_pos) else 0
+
+func set_neg_hp(map_pos: Vector2i, hp: int):
+	var grid_pos := map_to_grid(map_pos)
+	assert(coords_in_grid(grid_pos))
+	neg_hp_grid[grid_pos.x][grid_pos.y] = hp
+
 func get_power(map_pos: Vector2i) -> ConduitInfo:
 	var grid_pos := map_to_grid(map_pos)
 	return power_grid[grid_pos.x][grid_pos.y] if coords_in_grid(grid_pos) else ConduitInfo.EMPTY
@@ -93,13 +120,17 @@ func set_power(map_pos: Vector2i, power: ConduitInfo):
 	if update_debug_layer:
 		update_debug_layer_at(map_pos, power)
 
+func get_laser_dir(map_pos: Vector2i) -> Vector2i:
+	var data: TileData = %ConduitDebugLayer.get_cell_tile_data(map_pos)
+	return data.get_custom_data("laser_dir") if data else Vector2i.ZERO
+
 func update_debug_layer_at(coords: Vector2i, power: ConduitInfo):	if update_debug_layer:
 	if power in [ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P]:
-		conduit_debug_layer.set_cell(coords, 0, Vector2i(15, 12 + (power as int) - (ConduitInfo.LEFT_P as int)))
+		%ConduitDebugLayer.set_cell(coords, 0, Vector2i(15, 12 + (power as int) - (ConduitInfo.LEFT_P as int)))
 	elif power in [ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN]:
-		conduit_debug_layer.set_cell(coords, 0, Vector2i(14, 12 + (power as int) - (ConduitInfo.LASER_LEFT as int)))
+		%ConduitDebugLayer.set_cell(coords, 0, Vector2i(14, 12 + (power as int) - (ConduitInfo.LASER_LEFT as int)))
 	else:
-		conduit_debug_layer.erase_cell(coords)
+		%ConduitDebugLayer.erase_cell(coords)
 
 func get_temp(map_pos: Vector2i) -> float:
 	var data := get_cell_tile_data(map_pos)
@@ -119,15 +150,20 @@ func get_conduit_info(map_pos: Vector2i) -> ConduitInfo:
 		return data.get_custom_data("conduit") as ConduitInfo
 	return ConduitInfo.EMPTY
 
+func erase_cell_multilayer(coords):
+	erase_cell(coords)
+	%XRayLayer.erase_cell(coords)
+	shadow_layer.erase_cell(coords)
+	%NegativeLayer.set_cell(coords, 0, NEGATIVE_BREAKABLE_POS)
+	set_neg_hp(coords, 1)
+
 func get_hit(coords: Vector2i):
 	# Destruction
 	var hp := get_hp(coords)
 	if hp > 0 and hp < 900:
 		hp -= 1
 		if hp <= 0:
-			erase_cell(coords)
-			%XRayLayer.erase_cell(coords)
-			shadow_layer.erase_cell(coords)
+			erase_cell_multilayer(coords)
 		else:
 			set_hp(coords, hp)
 		return
@@ -142,6 +178,19 @@ func get_hit(coords: Vector2i):
 	var conduit_info := get_conduit_info(coords)
 	if conduit_info >= ConduitInfo.LEFT and conduit_info <= ConduitInfo.UP:
 		turn_arrow_at(coords, conduit_info)
+
+func _on_negative_layer_hit(coords: Vector2i) -> void:
+	# Destruction
+	var hp := get_neg_hp(coords)
+	if hp > 0 and hp < 900:
+		hp -= 1
+		if hp <= 0:
+			%NegativeLayer.erase_cell(coords)
+			shadow_layer.set_cell(coords, 0, SHADOW_OCCLUDER_POS)
+			set_cell(coords, 1, Vector2i.ZERO)  # Dirt
+			set_hp(coords, 1)
+		else:
+			set_neg_hp(coords, hp)
 
 func turn_arrow_at(coords: Vector2i, arrow_type: ConduitInfo):
 	var power := get_power(coords)
@@ -227,9 +276,7 @@ func remove_laser_from(coords: Vector2i, power: ConduitInfo):
 	conduit_update(next_laser_pos)
 
 func open_door(coords: Vector2i):
-	erase_cell(coords)
-	%XRayLayer.erase_cell(coords)
-	shadow_layer.erase_cell(coords)
+	erase_cell_multilayer(coords)
 	set_power(coords, ConduitInfo.EMPTY)
 	for neigh in get_surrounding_cells(coords):
 		if get_power(neigh) == ConduitInfo.OPENABLE:

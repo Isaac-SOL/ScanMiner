@@ -3,10 +3,13 @@ class_name Point2D extends Sprite2D
 @export var lifetime: float = 0.8
 @export var modulate_over_time: Curve
 @export var temp_gradient: Gradient
+@export var speed: float = 20.0
 
 var time: float = 100.0
+var direction: Vector2 = Vector2.ZERO
 
-func start_anim(temp: float = 1.0):
+func start_anim(temp: float = 1.0, dir: Vector2 = Vector2.ZERO):
+	direction = dir
 	time = 0.0
 	modulate = temp_gradient.sample(temp)
 	visible = true
@@ -18,3 +21,4 @@ func _process(delta: float) -> void:
 			return
 		time += delta
 		modulate.a = modulate_over_time.sample(time / lifetime)
+		position = position + direction * speed * delta

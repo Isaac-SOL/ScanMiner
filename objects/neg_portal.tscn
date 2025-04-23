@@ -1,0 +1,92 @@
+[gd_scene load_steps=12 format=3 uid="uid://cturqs2ilfv3w"]
+
+[ext_resource type="Texture2D" uid="uid://niunsng3pvha" path="res://assets/textures/neg_portal.png" id="1_pm1vc"]
+[ext_resource type="Script" uid="uid://bqbg21x1s0xpp" path="res://scripts/neg_portal.gd" id="1_uuw50"]
+[ext_resource type="Texture2D" uid="uid://da0u2j42xbr7r" path="res://assets/textures/neg_protal_2.png" id="3_h7p1i"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ltdu"]
+atlas = ExtResource("1_pm1vc")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uuw50"]
+atlas = ExtResource("1_pm1vc")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h7p1i"]
+atlas = ExtResource("1_pm1vc")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xd71m"]
+atlas = ExtResource("1_pm1vc")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmqou"]
+atlas = ExtResource("1_pm1vc")
+region = Rect2(0, 64, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c563a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ltdu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uuw50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h7p1i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xd71m")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_nmqou")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8lw4e"]
+radius = 16.0
+
+[sub_resource type="Gradient" id="Gradient_xd71m"]
+offsets = PackedFloat32Array(0, 0.203846, 0.638462, 0.815385, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0.769737, 0.769737, 0.769737, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[node name="NegPortal" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_uuw50")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("3_h7p1i")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_c563a")
+autoplay = "default"
+frame_progress = 0.220213
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_8lw4e")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+position = Vector2(-3, 3)
+amount = 16
+lifetime = 4.0
+emission_shape = 1
+emission_sphere_radius = 100.0
+gravity = Vector2(0, 0)
+orbit_velocity_min = 0.03
+orbit_velocity_max = 0.1
+radial_accel_min = -10.0
+radial_accel_max = -10.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color = Color(0.698039, 0.25098, 0.498039, 1)
+color_ramp = SubResource("Gradient_xd71m")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

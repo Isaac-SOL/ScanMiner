@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://di4lmm00ssq3i"]
+[gd_scene load_steps=34 format=3 uid="uid://di4lmm00ssq3i"]
 
 [ext_resource type="Script" uid="uid://cqacoi816t208" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://ernn5pinxlwr" path="res://objects/player_character.tscn" id="1_o5qli"]
@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://d2hl7ndrm128r" path="res://objects/upgrade_xray.tscn" id="13_gqmmt"]
 [ext_resource type="FontFile" uid="uid://vk8jocl5wcn1" path="res://assets/fonts/Kenney High.ttf" id="13_jkv2x"]
 [ext_resource type="Script" uid="uid://m2gsnj67knaj" path="res://scripts/echo_text_label.gd" id="14_jbj1t"]
+[ext_resource type="PackedScene" uid="uid://cturqs2ilfv3w" path="res://objects/neg_portal.tscn" id="14_jscy8"]
+[ext_resource type="Shader" uid="uid://dpcocrkh57g0v" path="res://shaders_mats/negative.gdshader" id="17_yc10j"]
 
 [sub_resource type="Environment" id="Environment_choun"]
 background_mode = 1
@@ -58,6 +60,21 @@ shader_parameter/screen_edge = 0.45
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkv2x"]
 resource_local_to_scene = true
 shader = ExtResource("11_trceg")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_yc10j"]
+width = 640
+height = 360
+color_ramp = SubResource("Gradient_choun")
+noise = SubResource("FastNoiseLite_ya4ey")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jscy8"]
+resource_local_to_scene = true
+shader = ExtResource("17_yc10j")
+shader_parameter/shadow = SubResource("ViewportTexture_85g3d")
+shader_parameter/noise = SubResource("NoiseTexture2D_yc10j")
+shader_parameter/emitter_position = Vector2(0.5, 0.5)
+shader_parameter/screen_edge = 0.4
+shader_parameter/noise_strength = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tipki"]
 shader = ExtResource("9_choun")
@@ -101,9 +118,10 @@ remote_path = NodePath("../../../SubViewport/WorldShadow/CompanionLight")
 update_rotation = false
 update_scale = false
 
-[node name="ThermalScanner" parent="World/Companion" node_paths=PackedStringArray("point_cloud") instance=ExtResource("3_ya4ey")]
+[node name="ThermalScanner" parent="World/Companion" node_paths=PackedStringArray("point_cloud", "tilemap") instance=ExtResource("3_ya4ey")]
 unique_name_in_owner = true
 point_cloud = NodePath("../../PointCloud")
+tilemap = NodePath("../../TileMapLayer")
 
 [node name="Shaker2D" type="Node2D" parent="World" node_paths=PackedStringArray("target_node")]
 unique_name_in_owner = true
@@ -119,13 +137,13 @@ remote_path = NodePath("../../../../SubViewport/WorldShadow/ShadowCamera")
 [node name="TileMapLayer" parent="World" node_paths=PackedStringArray("shadow_layer", "light_source_parent") instance=ExtResource("4_jyhfs")]
 unique_name_in_owner = true
 shadow_layer = NodePath("../../SubViewport/ShadowLayer")
-update_debug_layer = true
 light_source_parent = NodePath("../../SubViewport/WorldShadow/Lightsources")
 
 [node name="PointCloud" type="Node2D" parent="World"]
 visibility_layer = 4
 script = ExtResource("6_eb6dy")
 point2d = ExtResource("7_trceg")
+pool_size = 150
 
 [node name="CompanionLab" type="Node2D" parent="World"]
 
@@ -184,6 +202,14 @@ companion = NodePath("../Companion")
 [node name="UpgradeXray" parent="World" node_paths=PackedStringArray("companion") instance=ExtResource("13_gqmmt")]
 position = Vector2(-768, 782)
 companion = NodePath("../Companion")
+max_distance = 50.0
+
+[node name="NegPortal" parent="World" instance=ExtResource("14_jscy8")]
+position = Vector2(816, 912)
+
+[node name="UpgradeThermal2" parent="World" node_paths=PackedStringArray("companion") instance=ExtResource("12_0ld40")]
+position = Vector2(242, 592)
+companion = NodePath("../Companion")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -204,6 +230,13 @@ offset_bottom = 360.0
 unique_name_in_owner = true
 visibility_layer = 4
 material = SubResource("ShaderMaterial_jkv2x")
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="NegativeMixer" type="ColorRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_jscy8")
 offset_right = 640.0
 offset_bottom = 360.0
 

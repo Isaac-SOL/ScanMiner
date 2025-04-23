@@ -13,7 +13,7 @@ func _process(delta: float) -> void:
 	queue_free()
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is WorldTileMap:
+	if body is TileMapLayer:
 		var coords := get_hit_coordinates(body)
 		if not coords.is_empty():
 			Singletons.shaker.shake(0.6, 0.2)
@@ -21,7 +21,7 @@ func _on_body_entered(body: Node2D) -> void:
 			for coord in coords:
 				body.get_hit(coord)
 
-func get_hit_coordinates(tile_map: WorldTileMap) -> Array[Vector2i]:
+func get_hit_coordinates(tile_map: TileMapLayer) -> Array[Vector2i]:
 	var coords: Array[Vector2i] = []
 	for point in scan_points:
 		var point_global := to_global(point)

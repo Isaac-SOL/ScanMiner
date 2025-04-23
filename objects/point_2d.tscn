@@ -32,3 +32,4 @@ script = ExtResource("1_lnroa")
 lifetime = 1.6
 modulate_over_time = SubResource("Curve_lnroa")
 temp_gradient = SubResource("Gradient_lnroa")
+speed = 35.0

@@ -22,11 +22,10 @@ void fragment() {
 	
 	float emitter_dist = length(eff_uv - emitter_position);
 	if (emitter_dist > screen_edge) {
-		eff_uv = mix(eff_uv, emitter_position, (emitter_dist - 0.5) / emitter_dist);
+		eff_uv = mix(eff_uv, emitter_position, (emitter_dist - screen_edge) / emitter_dist);
 	}
 	
 	vec4 scr = texture(screen, eff_uv);
-	scr = (scr + texture(screen, eff_uv)) / 2.0;
 	
 	float val = 0.299 * scr.r + 0.587 * scr.g + 0.114 * scr.b;
 	val = 1.0 / (1.0 + exp(-(6.0*val) + 3.0));

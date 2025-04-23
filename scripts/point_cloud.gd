@@ -19,11 +19,11 @@ func _on_point_visibility_changed(id: int):
 	if not pool[id].visible:
 		used[id] = false
 
-func spawn_point_at(global_pos: Vector2, temp: float = 1.0):
+func spawn_point_at(global_pos: Vector2, temp: float = 1.0, direction: Vector2 = Vector2.ZERO):
 	var i: int = 0
-	while used[i] and i < pool_size:
+	while i < pool_size and used[i]:
 		i += 1
 	if i < pool_size:
 		pool[i].global_position = global_pos
-		pool[i].start_anim(temp)
+		pool[i].start_anim(temp, direction)
 		used[i] = true

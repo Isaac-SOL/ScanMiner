@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://ernn5pinxlwr"]
+[gd_scene load_steps=6 format=3 uid="uid://ernn5pinxlwr"]
 
 [ext_resource type="Script" uid="uid://dmd0rkxm84ip0" path="res://scripts/player_character.gd" id="1_h5vi8"]
 [ext_resource type="Texture2D" uid="uid://c3ko5haqw86je" path="res://icon.svg" id="2_erfry"]
 [ext_resource type="PackedScene" uid="uid://bftgmvwclwkei" path="res://objects/slash.tscn" id="2_tb2t4"]
+[ext_resource type="PackedScene" uid="uid://d316xbai8j4q0" path="res://objects/slash_neg.tscn" id="3_tb2t4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tb2t4"]
 radius = 18.0
@@ -16,6 +17,7 @@ wall_min_slide_angle = 0.0872665
 script = ExtResource("1_h5vi8")
 move_speed = 150.0
 slash_object = ExtResource("2_tb2t4")
+neg_slash_object = ExtResource("3_tb2t4")
 slash_distance = 35.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

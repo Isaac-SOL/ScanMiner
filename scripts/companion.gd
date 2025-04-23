@@ -27,9 +27,17 @@ func activate():
 
 func add_mode(new_mode: Main.VisionMode):
 	unlocked_modes[modes.find(new_mode)] = true
+	%PingSprite.visible = true
 
 func on_hit():
 	mode_position = (mode_position + 1) % unlocked_modes.size()
 	while not unlocked_modes[mode_position]:
 		mode_position = (mode_position + 1) % unlocked_modes.size()
 	Singletons.main.set_vision(modes[mode_position])
+	%PingSprite.visible = false
+
+func enter_negative_world():
+	collision_mask = 0
+
+func exit_negative_world():
+	collision_mask = 1
