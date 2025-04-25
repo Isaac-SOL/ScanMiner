@@ -65,7 +65,7 @@ visible = false
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_524cr")
 autoplay = "default"
-frame_progress = 0.0323609
+frame_progress = 0.836684
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_bntxm")

@@ -1,0 +1,78 @@
+Caverne Scintillante
+Nous commençons notre excavation dans une caverne aux roches scintillantes.
+Nous allons nous séparer en équipes. Notre but premier est de trouver une source d'énergie thermique pour alimenter les machines.
+Ces curieuses pierres semblent résonner les sons environnant, comme des échos...
+...Ah, elle répète ce que je viens de dire !
+
+Couloir sud
+Il n'y a plus de lumières ici.
+Nous devrions rebrousser chemin. Je crois qu'une autre équipe a trouvé une source d'énergie.
+Nous pourrions apporter des lampes thermiques ici.
+
+Stockage des scanners
+Le bâtiment est rudimentaire mais fera l'affaire.
+Nous pourrons stocker et recharger nos scanners ici.
+Nous sommes en train de développer des outils de scan plus adaptés au terrain au laboratoire radioscopique.
+Des prototypes sont déjà utilisés au nord de la caverne scintillante.
+
+Source d'énergie
+Ne restez pas devant les connecteurs rotatifs trop longtemps. Le flux thermique est invisible mais peut être dangereux.
+Ils fonctionnent même sur de très longues distances, donc faites attention.
+Avec ça, nous pourrons alimenter la base des scanners au sud de la caverne scintillante.
+Les connecteurs sont pratiques, mais ils rendent la zone plus dangereuse à explorer.
+Nous développons des moyens de stockage physique au nord d'ici, plus faciles à transporter.
+
+Thermoscan Design:
+Qui a encore coupé l'alimentation !?
+Je ne peux pas tester le prototype si je ne peux pas rentrer dans mon labo !
+Avec ça, nous aurons plus de facilité à analyser la distribution thermique de ce réseau de cavernes.
+Merci au laboratoire radio. Ça n'a pas dû être évident de le transporter depuis l'autre côté de la caverne scintillante.
+Ils voulaient l'améliorer pour qu'il détecte les sources de chaleur plus éloignées, mais il leur fallait un nouveau type d'énergie.
+
+Energy Crystal Storage:
+Je me suis encore brûlé en touchant la porte !
+Je comprends qu'on n'ait que de l'énergie thermique ici bas, mais ça rend la manipulation de toutes les machines beaucoup plus dangereuse !
+Une gemme ne pourra alimenter qu'un générateur auxiliaire pendant quelques semaines.
+Donc vous devrez revenir ici régulièrement pour vous recharger. N'oubliez pas que le cristallisateur doit être alimenté pour fonctionner.
+Ils ont encore besoin de gemmes à l'étude de l'anti-espace.
+Tu peux leur en apporter ? C'est loiiin à l'est du laboratoire radioscopique.
+Il en faudra aussi pour le générateur de la couronne perpétuelle.
+
+Laboratoire radioscopique:
+Nous avons envoyé le prototype de scanner thermique au nord de la caverne scintillante.
+Nous nous concentrons maintenant sur le prochain scanner.
+Ce scanner radioscopique devrait nous permettre de trouver les aspérités dans la roche plus facilement, mais la résolution laisse à désirer...
+Avec un rayon d'énergie phasé différemment, braqué sur le scanner, nous devrions pouvoir en tirer plus de puissance.
+Je crois qu'ils ont eu des résultats concluants à ce sujet non loin de la caverne scintillante.
+Je me demande si le scanner radio pourrait être utilisé pour crocheter le code du labo tout à l'ouest. Je suis curieux de voir leurs expériences...
+Si seulement il avait une meilleure résolution...
+
+Prism study:
+Impressionnant ! Ce cristal atypique semble pouvoir agir comme prisme et déformer nos lasers thermiques.
+Malheureusement, ils contiennent de l'antimatières nous n'avons pas encore trouvé de moyer de les transporter.
+Merci d'éviter de les casser, nous ne savons pas les reproduire !
+Je me demande lesquels de nos outils pourraient bénéficier au mieux de ce nouveau type de rayon phasé...
+
+Prism Creation:
+Note : Les recherches sur le cristal de phase se poursuivent ici.
+Nous avons scellé l'entrée de la salle centrale, de telle sorte que seuls le personnel agréé de l'équipe antimatière pourra entrer.
+[COMMENT REPRODUIRE UN PRISME]: gemme cassée dans antimonde ?
+
+Negative Space:
+Non loin d'ici semble se trouver l'objet de nos recherches, la source des pics d'antimatière de la zone.
+Note: Seuls le personnel agréé est autorisé à entrer dans la cavité.
+L'objet est dangereux et manifeste des propriétés exotiques.
+Note : Le SAS contient un gaz bivide qui nous protège lors de la transition.
+Eh bien, je ne m'attendais pas à ça!
+C'est tout bonnement incroyable. Je vais avoir du mal à m'y habituer...
+Imaginez tous les nouveaux champs de recherches qui pourront naître de cette simple découverte !
+Je suis déjà curieux de vous les fameux prismes de phase sous ce nouvel angle.
+
+Negative Pearl:
+Cette perle concentrée d'animatière devrait nous permettre de transitionner entre les mondes plus facilement.
+
+Couronne Perpétuelle:
+C'est moi, ou ce connecteur est totalement isolé ?
+Le mécanisme interne est très sophistiqué. Vous ne pourrez pas entrer sans connaître le code.
+La machine est prête. Ils nous suffit maintenant d'alimenter les trois points d'entrée avec des rayons phasés.
+La couronne perpétuelle sera bientôt entre nos mains.

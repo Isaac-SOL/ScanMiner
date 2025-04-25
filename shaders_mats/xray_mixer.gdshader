@@ -7,6 +7,8 @@ uniform float strength = 2.0;
 uniform vec2 emitter_position = vec2(0.5);
 uniform float mult_at_edge = 1.0;
 uniform float screen_edge = 0.4;
+uniform float shadow_factor_min = 2.0;
+uniform float shadow_factor_max = 3.5;
 
 const vec2 pixel_size = vec2(1.0 / 320.0, 1.0 / 180.0);
 
@@ -16,7 +18,7 @@ void fragment() {
 	float s = texture(shadow, SCREEN_UV).r;
 	float norm_dist = length(SCREEN_UV - emitter_position) / screen_edge;
 	float m = norm_dist * norm_dist * norm_dist * (mult_at_edge - 1.0) + 1.0;
-	float factor = mix(5.0, 2.0, s);
+	float factor = mix(shadow_factor_max, shadow_factor_min, s);
 	vec2 nvec = (vec2(n1, n2) - vec2(0.5)) * pixel_size * factor * m * strength;
 	vec2 eff_uv = SCREEN_UV + nvec;
 	

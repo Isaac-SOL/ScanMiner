@@ -33,3 +33,5 @@ func get_hit_coordinates(tile_map: TileMapLayer) -> Array[Vector2i]:
 func _on_companion_detector_body_entered(body: Node2D) -> void:
 	if body is Companion:
 		body.on_hit()
+	if body is Gem:
+		body.on_hit()

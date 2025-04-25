@@ -1,7 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dteeejg43g0q3"]
+[gd_scene load_steps=3 format=3 uid="uid://dteeejg43g0q3"]
 
 [ext_resource type="Script" uid="uid://dnxq3aium7mf8" path="res://scripts/thermal_scanner.gd" id="1_5sh4u"]
+[ext_resource type="PackedScene" uid="uid://honngcldfe4u" path="res://objects/thermal_signal.tscn" id="2_rlcqg"]
 
 [node name="ThermalScanner" type="Node2D"]
+visibility_layer = 5
 script = ExtResource("1_5sh4u")
 laser_detection_distance = 300.0
+
+[node name="ThermalSignal" parent="." instance=ExtResource("2_rlcqg")]
+unique_name_in_owner = true
+visible = false

@@ -2,6 +2,9 @@ class_name Main extends Node
 
 enum VisionMode { NORMAL, XRAY, THERMAL }
 
+signal entering_negative_world
+signal exiting_negative_world
+
 var vision_mode := VisionMode.NORMAL
 var has_companion: bool = false
 var xray_shader: ShaderMaterial
@@ -18,6 +21,8 @@ func _process(delta: float) -> void:
 	Singletons.world = %World
 	Singletons.tilemap = %TileMapLayer
 	Singletons.player = %PlayerCharacter
+	Singletons.companion = %Companion
+	Singletons.camera = %MainCamera
 			
 	#if Input.is_action_just_pressed("act2"):
 		#match vision_mode:
@@ -61,14 +66,23 @@ func set_vision(new_mode: VisionMode):
 func _on_companion_activated() -> void:
 	has_companion = true
 
+func upgrade_companion() -> void:
+	xray_shader.set_shader_parameter("strength", 1.0)
+	xray_shader.set_shader_parameter("screen_edge", 0.6)
+	xray_shader.set_shader_parameter("shadow_factor_min", 1.0)
+	xray_shader.set_shader_parameter("shadow_factor_max", 2.0)
+	%ThermalScanner.upgrade()
+
 func enter_negative_world():
 	negative_world = true
 	set_vision(vision_mode)
 	Singletons.player.enter_negative_world()
 	%Companion.enter_negative_world()
+	entering_negative_world.emit()
 
 func exit_negative_world():
 	negative_world = false
 	set_vision(VisionMode.NORMAL)
 	Singletons.player.exit_negative_world()
 	%Companion.exit_negative_world()
+	exiting_negative_world.emit()

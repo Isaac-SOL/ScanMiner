@@ -5,6 +5,7 @@ class_name PlayerCharacter extends CharacterBody2D
 @export var neg_slash_object: PackedScene
 @export var slash_distance: float = 20
 @export var slash_cooldown: float = 0.5
+@export var ui_text: EchoTextLabel
 
 var direction: Vector2
 var controller_mode: bool = false
@@ -18,7 +19,7 @@ func _process(delta: float) -> void:
 	velocity = move_vec
 	move_and_slide()
 	next_slash -= delta
-	if Input.is_action_just_pressed("act1") and next_slash <= 0.0:
+	if Input.is_action_just_pressed("act1") and next_slash <= 0.0 and ui_text.displaying.is_empty():
 		next_slash = slash_cooldown
 		slash(get_global_mouse_position() - global_position)
 

@@ -1,0 +1,131 @@
+{
+	"scintil_start": [
+		"Nous commençons notre excavation\ndans une caverne de roches scintillantes.",
+		"Nous allons nous séparer en équipes.\nNotre but premier est de trouver\nune source d'énergie thermique\npour alimenter les machines."
+	],
+	"scintil_echo": [
+		"Ces curieuses pierres\nsemblent faire résonner les sons environnants,\ncomme des échos...",
+		"...Ah, elle répète ce que je viens de dire !"
+	],
+	
+	"corridor_hint_source": [
+		"Il n'y a plus de lumières ici.",
+		"Nous devrions rebrousser chemin.\nJe crois qu'une autre équipe a trouvé une source d'énergie.",
+		"Nous pourrions rapporter des lampes thermiques\npour illuminer le chemin."
+	],
+	
+	"scanner_desc": [
+		"Le bâtiment est rudimentaire mais fera l'affaire.",
+		"Nous pourrons stocker et recharger nos scanners ici."
+	],
+	"scanner_hint_thermal": [
+		"Nous sommes en train de développer des outils de scan\nplus adaptés au terrain,\nau laboratoire radioscopique.",
+		"Des prototypes sont déjà en train d'être testés\nau nord de la caverne scintillante."
+	],
+	
+	"source_help_arrows": [
+		"Ne restez pas devant les connecteurs rotatifs trop longtemps.\nLe flux thermique est invisible mais peut être dangereux.",
+		"Ils fonctionnent même sur de très longues distances,\ndonc faites attention."
+	],
+	"source_hint_scanner": [
+		"Avec ça, nous pourrons alimenter la base des scanners\nau sud de la caverne scintillante."
+	],
+	"source_hint_gems": [
+		"Les connecteurs sont pratiques,\nmais ils rendent la zone plus dangereuse à explorer.",
+		"Nous développons des moyens de stockage physique au nord d'ici,\nplus faciles à transporter."
+	],
+	
+	"thermal_entrance": [
+		"Qui a encore coupé l'alimentation !?",
+		"Je ne peux pas tester le prototype\nsi je ne peux pas entrer dans mon labo !"
+	],
+	"thermal_desc_hint_radio": [
+		"Avec ça, nous aurons plus de facilité à analyser\nla distribution thermique de ce réseau de cavernes.",
+		"Merci au laboratoire radio.\nÇa n'a pas dû être évident de le transporter\ndepuis l'autre côté de la caverne scintillante."
+	],
+	"thermal_hint_upgrade": [
+		"J'aimerais qu'il détecte\nles sources de chaleur plus éloignées,\nmais apparemment il leur faudrait un nouveau type d'énergie...?"
+	],
+	
+	"gems_entrance": [
+		"Je me suis encore brûlé en touchant la porte !",
+		"Je comprends qu'on n'ait\nque de l'énergie thermique ici bas,\nmais ça rend la manipulation de toutes les machines\nbeaucoup plus dangereuse !"
+	],
+	"gems_desc": [
+		"Une gemme ne pourra alimenter\nqu'un générateur auxiliaire\npendant quelques semaines.",
+		"Donc vous devrez revenir ici régulièrement\npour vous recharger.\nN'oubliez pas que le cristallisateur doit être alimenté\npour fonctionner.",
+		"Et faites bien attention à ne pas les casser.\nElles sont très fragiles,\net laissent un résidu potentiellement dangereux au sol."
+	],
+	"gems_hint_anti_crown": [
+		"Ils ont encore besoin de gemmes\nà l'étude de l'anti-espace.",
+		"Tu peux leur en apporter ?\nC'est loiiiin à l'est du laboratoire radioscopique.",
+		"Il en faudra aussi pour le générateur\nde la couronne perpétuelle."
+	],
+	
+	"radio_hint_thermal": [
+		"Laboratoire Radioscopique, Log #208.\nNous avons envoyé le prototype de scanner thermique\nau nord de la caverne scintillante.",
+		"Nous nous concentrons maintenant sur le prochain type de scanner."
+	],
+	"radio_desc_hint_upgrade": [
+		"Ce scanner radioscopique devrait nous permettre\nde trouver les aspérités dans la roche plus facilement,\nmais la résolution laisse à désirer...",
+		"Avec un rayon d'énergie phasé différemment,\nbraqué sur le scanner,\nnous devrions pouvoir en tirer plus de puissance.",
+		"Je crois qu'ils ont eu des résultats concluants à ce sujet\nnon loin de la caverne scintillante."
+	],
+	"radio_hint_crown": [
+		"Je me demande si le scanner radio\npourrait être utilisé pour crocheter\nle code du labo tout à l'ouest.\nJe suis curieux de voir leurs expériences...",
+		"Si seulement il avait une meilleure résolution..."
+	],
+	
+	"prism_desc": [
+		"Impressionnant !\nCe cristal atypique semble pouvoir agir comme prisme\net déformer nos lasers thermiques.",
+		"Malheureusement, ils contiennent de l'antimatière\net nous n'avons pas encore trouvé de moyer de les transporter.",
+		"Merci d'éviter de les casser,\nnous ne savons pas (encore) les reproduire !"
+	],
+	"prism_hint_upgrade": [
+		"Je me demande lesquels de nos outils\npourraient bénéficier au mieux\nde ce nouveau type de rayon phasé..."
+	],
+	"prism_advanced_entrance": [
+		"Note : Les recherches sur le cristal de phase\nse poursuivent ici.",
+		"Nous avons scellé l'entrée de la salle centrale,\nde telle sorte que seuls le personnel agréé de l'équipe antimatière\npourra entrer."
+	],
+	"prism_advanced_desc": [
+		"Je crois avoir compris, au moins en partie,\nl'origine de ces prismes.",
+		"Ce sont la réflection dans \"notre monde\"\nde résidus d'énergie thermiques\nlaissés dans \"l'anti-monde\".",
+		"Le même type de résidus qui apparaît\nquand on brise une gemme thermique accidentellement.",
+		"Je me demande si nous pourrions reproduire l'expérience..."
+	],
+	
+	"neg_hint": [
+		"Non loin d'ici semble se trouver\nl'objet de nos recherches,\nla source des pics d'antimatière de la zone."
+	],
+	"neg_entrance": [
+		"Note: Seuls le personnel agréé est autorisé\nà entrer dans la cavité.",
+		"L'objet est dangereux\net manifeste des propriétés exotiques."
+	],
+	"neg_inner": [
+		"Note : Le SAS contient un gaz bivide\nqui nous protège lors de la transition.",
+		"Il a un aspect inquiétant\nmais n'est pas dangereux."
+	],
+	"neg_discovery": [
+		"Eh bien, je ne m'attendais pas à ça!\nSommes nous dans une sorte de... reflet ?",
+		"C'est tout bonnement incroyable.\nJe vais avoir du mal à m'y habituer...",
+		"Imaginez tous les nouveaux champs de recherches\nqui pourront naître de cette simple découverte !",
+		"Je suis déjà curieux de voir\nles fameux cristaux d'antimatière sous ce nouvel angle."
+	],
+	
+	"negpearl": [
+		"Cette perle concentrée d'animatière\ndevrait nous permettre de transitionner entre les mondes\nplus facilement."
+	],
+	
+	"crown_hint_source": [
+		"C'est moi, ou ce connecteur est totalement isolé ?\nQui l'a mis là ?"
+	],
+	"crown_entrance": [
+		"Vous ne pourrez pas entrer sans connaître le code.",
+		"Le mécanisme interne de la serrure\nest extrêmement sophistiqué."
+	],
+	"crown_generator": [
+		"La machine est prête.\nIls nous suffit maintenant d'alimenter les trois points d'entrée\navec des rayons thermiques phasés.",
+		"La couronne perpétuelle\nsera bientôt entre nos mains."
+	]
+}

@@ -20,8 +20,8 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.4764, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_lnroa"]
-offsets = PackedFloat32Array(0, 0.608491, 0.75, 0.882075, 1)
-colors = PackedColorArray(0, 0, 1, 1, 1, 0, 0, 1, 1, 0.419608, 0, 1, 1, 0.870588, 0, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.606618, 0.783088, 0.915441, 1)
+colors = PackedColorArray(0, 0, 1, 1, 0.787542, 4.16331e-06, 5.77569e-07, 1, 1, 0.216667, 0, 1, 1, 0.816667, 0, 1, 1, 1, 1, 1)
 
 [node name="Point2D" type="Sprite2D"]
 light_mask = 0

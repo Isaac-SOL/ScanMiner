@@ -8,17 +8,22 @@ enum ConduitInfo {
 	LEFT_P = 5, DOWN_P, RIGHT_P, UP_P,
 	SOURCE = 10,
 	SOURCE_EMPTY = 11,
+	CRYSTALLIZER = 15,
+	LIGHT_OFF = 16, LIGHT_ON,
 	LASER_LEFT = 21, LASER_DOWN, LASER_RIGHT, LASER_UP,
+	LASER_LEFT_S = 31, LASER_DOWN_S, LASER_RIGHT_S, LASER_UP_S,
+	LEFT_PS = 35, DOWN_PS, RIGHT_PS, UP_PS,
 	OPENABLE = 40,
-	PRISM = 50
+	PRISM = 60
 }
 
-signal echo_hit(text: String)
+signal echo_hit(text: Array)
 
 @export var shadow_layer: TileMapLayer
 @export var update_debug_layer: bool = false
 @export var light_source_parent: Node2D
 @export var light_source_object: PackedScene
+@export var gem_object: PackedScene
 
 var hp_grid: Array[Array] = []
 var neg_hp_grid: Array[Array] = []
@@ -26,6 +31,10 @@ var power_grid: Array[Array] = []
 var rect_offset: Vector2i
 var rect_size: Vector2i
 var companion_activated: bool = false
+var crystallizer_pos: Vector2i
+var last_gem: Gem
+var lights: Dictionary[Vector2i, PointLight2D] = {}
+var crown_door_opened: bool = false
 
 const NORMAL_ARROW_LEFT_POS := Vector2i(15, 2)
 const NORMAL_ARROW_RIGHT_POS := Vector2i(15, 0)
@@ -34,6 +43,9 @@ const XRAY_FRAGILE_POS := Vector2i(12, 0)
 const XRAY_SOURCE_POS := Vector2i(12, 1)
 const NEGATIVE_BREAKABLE_POS := Vector2i(12, 0)
 const NEGATIVE_UNBREAKABLE_POS := Vector2i(7, 0)
+const CROWN_LOCK_POSITIONS: Array[Vector2i] = [Vector2i(-39, 5), Vector2i(-39, 3), Vector2i(-39, 1), Vector2i(-39, -1)]
+const CROWN_DOOR_POSITIONS: Array[Vector2i] = [Vector2i(-35, -4), Vector2i(-34, -4), Vector2i(-33, -4)]
+const CROWN_BUTTON_POSITIONS: Array[Vector2i] = [Vector2i(-36, 5), Vector2i(-36, 3), Vector2i(-36, 1), Vector2i(-36, -1)]
 
 func _ready() -> void:
 	rect_offset = get_used_rect().position
@@ -48,6 +60,8 @@ func _ready() -> void:
 			if data != null:
 				hp_grid[x].append(data.get_custom_data("hp"))
 				power_grid[x].append(data.get_custom_data("conduit") as ConduitInfo)
+				if power_grid[x][y] == ConduitInfo.CRYSTALLIZER:
+					crystallizer_pos = map_pos
 				if update_debug_layer:
 					update_debug_layer_at(map_pos, data.get_custom_data("conduit") as ConduitInfo)
 				if data.get_occluder_polygons_count(0) > 0:
@@ -56,11 +70,16 @@ func _ready() -> void:
 					var new_light: PointLight2D = light_source_object.instantiate()
 					light_source_parent.add_child(new_light)
 					new_light.global_position = to_global(map_to_local(map_pos))
+					lights[map_pos] = new_light
+					if power_grid[x][y] == ConduitInfo.LIGHT_OFF:
+						new_light.visible = false
 				if data.get_custom_data("fragile"):
 					%XRayLayer.set_cell(map_pos, 0, XRAY_FRAGILE_POS)
 				if data.get_custom_data("hidden_source"):
 					%XRayLayer.set_cell(map_pos, 0, XRAY_SOURCE_POS)
-				if data.get_custom_data("bifull"):
+				if data.get_custom_data("bifull") \
+				   or data.get_collision_polygons_count(0) == 0 and not data.get_custom_data("text").is_empty():
+					# Bedrock or negative echo rock
 					%NegativeLayer.set_cell(map_pos, 0, NEGATIVE_UNBREAKABLE_POS)
 					neg_hp_grid[x].append(1000)
 				else:
@@ -124,13 +143,23 @@ func get_laser_dir(map_pos: Vector2i) -> Vector2i:
 	var data: TileData = %ConduitDebugLayer.get_cell_tile_data(map_pos)
 	return data.get_custom_data("laser_dir") if data else Vector2i.ZERO
 
+func get_laser_super(map_pos: Vector2i) -> bool:
+	var data: TileData = %ConduitDebugLayer.get_cell_tile_data(map_pos)
+	return data.get_custom_data("super") if data else false
+
 func update_debug_layer_at(coords: Vector2i, power: ConduitInfo):	if update_debug_layer:
-	if power in [ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P]:
-		%ConduitDebugLayer.set_cell(coords, 0, Vector2i(15, 12 + (power as int) - (ConduitInfo.LEFT_P as int)))
-	elif power in [ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN]:
-		%ConduitDebugLayer.set_cell(coords, 0, Vector2i(14, 12 + (power as int) - (ConduitInfo.LASER_LEFT as int)))
-	else:
-		%ConduitDebugLayer.erase_cell(coords)
+	print(power)
+	match power:
+		ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P:
+			%ConduitDebugLayer.set_cell(coords, 0, Vector2i(15, 12 + (power as int) - (ConduitInfo.LEFT_P as int)))
+		ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN:
+			%ConduitDebugLayer.set_cell(coords, 0, Vector2i(14, 12 + (power as int) - (ConduitInfo.LASER_LEFT as int)))
+		ConduitInfo.LEFT_PS, ConduitInfo.RIGHT_PS, ConduitInfo.UP_PS, ConduitInfo.DOWN_PS:
+			%ConduitDebugLayer.set_cell(coords, 0, Vector2i(15, 8 + (power as int) - (ConduitInfo.LEFT_PS as int)))
+		ConduitInfo.LASER_LEFT_S, ConduitInfo.LASER_RIGHT_S, ConduitInfo.LASER_UP_S, ConduitInfo.LASER_DOWN_S:
+			%ConduitDebugLayer.set_cell(coords, 0, Vector2i(14, 8 + (power as int) - (ConduitInfo.LASER_LEFT_S as int)))
+		_:
+			%ConduitDebugLayer.erase_cell(coords)
 
 func get_temp(map_pos: Vector2i) -> float:
 	var data := get_cell_tile_data(map_pos)
@@ -138,11 +167,11 @@ func get_temp(map_pos: Vector2i) -> float:
 		return data.get_custom_data("temp")
 	return 0.0
 
-func get_text_id(map_pos: Vector2i) -> int:
+func get_text_id(map_pos: Vector2i) -> String:
 	var data := get_cell_tile_data(map_pos)
 	if data != null:
 		return data.get_custom_data("text")
-	return 0
+	return ""
 
 func get_conduit_info(map_pos: Vector2i) -> ConduitInfo:
 	var data := get_cell_tile_data(map_pos)
@@ -156,6 +185,10 @@ func erase_cell_multilayer(coords):
 	shadow_layer.erase_cell(coords)
 	%NegativeLayer.set_cell(coords, 0, NEGATIVE_BREAKABLE_POS)
 	set_neg_hp(coords, 1)
+	if get_power(coords) == ConduitInfo.PRISM:
+		set_power(coords, ConduitInfo.EMPTY)
+		for neighbor in get_surrounding_cells(coords):
+			conduit_update(neighbor)
 
 func get_hit(coords: Vector2i):
 	# Destruction
@@ -169,15 +202,29 @@ func get_hit(coords: Vector2i):
 		return
 	
 	# Echo stones
-	var text_id := get_text_id(coords) - 1
-	if text_id != -1:
-		echo_hit.emit(%TextHolder.get_text(text_id))
-		return
+	var data: = get_cell_tile_data(coords)
+	if data and data.get_collision_polygons_count(0) > 0:
+		var text_id := get_text_id(coords)
+		if not text_id.is_empty():
+			echo_hit.emit(%TextHolder.get_text_json(text_id))
+			return
 	
 	# Conduits
 	var conduit_info := get_conduit_info(coords)
 	if conduit_info >= ConduitInfo.LEFT and conduit_info <= ConduitInfo.UP:
 		turn_arrow_at(coords, conduit_info)
+		return
+	
+	# Empty sources
+	if conduit_info == ConduitInfo.SOURCE_EMPTY and Singletons.companion.is_carrying_gem():
+		var glob_coords := to_global(map_to_local(coords))
+		Singletons.companion.carrying_gem.move_to_furnace(glob_coords)
+	
+	# Buttons
+	if coords in CROWN_BUTTON_POSITIONS:
+		var idx := CROWN_BUTTON_POSITIONS.find(coords)
+		turn_arrow_at(CROWN_LOCK_POSITIONS[idx], get_conduit_info(CROWN_LOCK_POSITIONS[idx]))
+		check_crown_lock()
 
 func _on_negative_layer_hit(coords: Vector2i) -> void:
 	# Destruction
@@ -191,15 +238,50 @@ func _on_negative_layer_hit(coords: Vector2i) -> void:
 			set_hp(coords, 1)
 		else:
 			set_neg_hp(coords, hp)
+	
+	# Echo stones
+	if get_cell_tile_data(coords).get_collision_polygons_count(0) == 0:
+		var text_id := get_text_id(coords)
+		if not text_id.is_empty():
+			echo_hit.emit(%TextHolder.get_text_json(text_id))
+			return
+
+func check_crown_lock():
+	if not crown_door_opened:
+		for lock_arrow_coords in CROWN_LOCK_POSITIONS:
+			if get_conduit_info(lock_arrow_coords) != ConduitInfo.LEFT:
+				return
+		for door_coords in CROWN_DOOR_POSITIONS:
+			erase_cell_multilayer(door_coords)
+		crown_door_opened = true
+
+func create_pos_residue(coords: Vector2i):
+	if not get_cell_tile_data(coords):
+		set_cell(coords, 1, Vector2i(9, 0))
+
+func create_neg_residue(coords: Vector2i, retry: bool = true):
+	# Note: bug when creating right next to an arrow
+	if get_hp(coords) < 900:
+		set_cell(coords, 1, Vector2i(8, 0))
+		set_hp(coords, 1)
+		%XRayLayer.erase_cell(coords)
+		shadow_layer.erase_cell(coords)
+		set_power(coords, ConduitInfo.PRISM)
+		for neighbor in get_surrounding_cells(coords):
+			conduit_update(neighbor)
 
 func turn_arrow_at(coords: Vector2i, arrow_type: ConduitInfo):
 	var power := get_power(coords)
 	var next_arrow := (arrow_type as int) % 4
-	var next_power := ((power as int - ConduitInfo.LEFT_P + 1) % 4) + ConduitInfo.LEFT_P
-	if power >= ConduitInfo.LEFT_P and power <= ConduitInfo.UP_P:
+	if (power >= ConduitInfo.LEFT_P and power <= ConduitInfo.UP_P) or (power >= ConduitInfo.LEFT_PS and power <= ConduitInfo.UP_PS):
 		remove_laser_from(coords, arrow_type)
 	set_cell(coords, 1, Vector2i(15, next_arrow))
-	set_power(coords, next_power)
+	if is_super(power):
+		var next_super := ((power as int - ConduitInfo.LEFT_PS + 1) % 4) + ConduitInfo.LEFT_PS
+		set_power(coords, next_super)
+	else:
+		var next_power := ((power as int - ConduitInfo.LEFT_P + 1) % 4) + ConduitInfo.LEFT_P
+		set_power(coords, next_power)
 	conduit_update(coords)
 
 func is_power_incoming(coords: Vector2i) -> bool:
@@ -208,53 +290,80 @@ func is_power_incoming(coords: Vector2i) -> bool:
 	incoming = incoming or get_power(coords + Vector2i.DOWN) in [ConduitInfo.LASER_UP, ConduitInfo.SOURCE]
 	incoming = incoming or get_power(coords + Vector2i.RIGHT) in [ConduitInfo.LASER_LEFT, ConduitInfo.SOURCE]
 	incoming = incoming or get_power(coords + Vector2i.LEFT) in [ConduitInfo.LASER_RIGHT, ConduitInfo.SOURCE]
+	return incoming or is_super_power_incoming(coords)
+
+func is_super_power_incoming(coords: Vector2i) -> bool:
+	var incoming := false
+	incoming = incoming or get_power(coords + Vector2i.UP) == ConduitInfo.LASER_DOWN_S
+	incoming = incoming or get_power(coords + Vector2i.DOWN) == ConduitInfo.LASER_UP_S
+	incoming = incoming or get_power(coords + Vector2i.RIGHT) == ConduitInfo.LASER_LEFT_S
+	incoming = incoming or get_power(coords + Vector2i.LEFT) == ConduitInfo.LASER_RIGHT_S
 	return incoming
 
 func power_to_dir(power: ConduitInfo) -> Vector2i:
 	match power:
-		ConduitInfo.LEFT, ConduitInfo.LEFT_P, ConduitInfo.LASER_LEFT:
+		ConduitInfo.LEFT, ConduitInfo.LEFT_P, ConduitInfo.LASER_LEFT, ConduitInfo.LASER_LEFT_S, ConduitInfo.LEFT_PS:
 			return Vector2i.LEFT
-		ConduitInfo.RIGHT, ConduitInfo.RIGHT_P, ConduitInfo.LASER_RIGHT:
+		ConduitInfo.RIGHT, ConduitInfo.RIGHT_P, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_RIGHT_S, ConduitInfo.RIGHT_PS:
 			return Vector2i.RIGHT
-		ConduitInfo.UP, ConduitInfo.UP_P, ConduitInfo.LASER_UP:
+		ConduitInfo.UP, ConduitInfo.UP_P, ConduitInfo.LASER_UP, ConduitInfo.LASER_UP_S, ConduitInfo.UP_PS:
 			return Vector2i.UP
-		ConduitInfo.DOWN, ConduitInfo.DOWN_P, ConduitInfo.LASER_DOWN:
+		ConduitInfo.DOWN, ConduitInfo.DOWN_P, ConduitInfo.LASER_DOWN, ConduitInfo.LASER_DOWN_S, ConduitInfo.DOWN_PS:
 			return Vector2i.DOWN
 	return Vector2i.ZERO
 
-func power_to_laser(power: ConduitInfo) -> ConduitInfo:
+func power_to_laser(power: ConduitInfo, sup: bool) -> ConduitInfo:
 	match power:
-		ConduitInfo.LEFT, ConduitInfo.LEFT_P, ConduitInfo.LASER_LEFT:
-			return ConduitInfo.LASER_LEFT
-		ConduitInfo.RIGHT, ConduitInfo.RIGHT_P, ConduitInfo.LASER_RIGHT:
-			return ConduitInfo.LASER_RIGHT
-		ConduitInfo.UP, ConduitInfo.UP_P, ConduitInfo.LASER_UP:
-			return ConduitInfo.LASER_UP
-		ConduitInfo.DOWN, ConduitInfo.DOWN_P, ConduitInfo.LASER_DOWN:
-			return ConduitInfo.LASER_DOWN
+		ConduitInfo.LEFT, ConduitInfo.LEFT_P, ConduitInfo.LASER_LEFT, ConduitInfo.LASER_LEFT_S, ConduitInfo.LEFT_PS:
+			return ConduitInfo.LASER_LEFT_S if sup else ConduitInfo.LASER_LEFT
+		ConduitInfo.RIGHT, ConduitInfo.RIGHT_P, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_RIGHT_S, ConduitInfo.RIGHT_PS:
+			return ConduitInfo.LASER_RIGHT_S if sup else ConduitInfo.LASER_RIGHT
+		ConduitInfo.UP, ConduitInfo.UP_P, ConduitInfo.LASER_UP, ConduitInfo.LASER_UP_S, ConduitInfo.UP_PS:
+			return ConduitInfo.LASER_UP_S if sup else ConduitInfo.LASER_UP
+		ConduitInfo.DOWN, ConduitInfo.DOWN_P, ConduitInfo.LASER_DOWN, ConduitInfo.LASER_DOWN_S, ConduitInfo.DOWN_PS:
+			return ConduitInfo.LASER_DOWN_S if sup else ConduitInfo.LASER_DOWN
 	return ConduitInfo.EMPTY
 
-func power_up_arrow(power: ConduitInfo) -> ConduitInfo:
+func power_up_arrow(power: ConduitInfo, sup: bool) -> ConduitInfo:
 	assert(power in [ConduitInfo.LEFT, ConduitInfo.RIGHT, ConduitInfo.UP, ConduitInfo.DOWN])
-	return (power as int + 4) as ConduitInfo
+	return (power as int + (34 if sup else 4)) as ConduitInfo
 
-func power_down_arrow(power: ConduitInfo) -> ConduitInfo:
-	assert(power in [ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P])
-	return (power as int - 4) as ConduitInfo
+func power_down_arrow(power: ConduitInfo, sup: bool) -> ConduitInfo:
+	if sup:
+		assert(power in [ConduitInfo.LEFT_PS, ConduitInfo.RIGHT_PS, ConduitInfo.UP_PS, ConduitInfo.DOWN_PS])
+		return (power as int - 34) as ConduitInfo
+	else:
+		assert(power in [ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P])
+		return (power as int - 4) as ConduitInfo
+
+func super_laser(power: ConduitInfo) -> ConduitInfo:
+	assert(power in [ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN])
+	return (power as int + 10) as ConduitInfo
+
+func infra_laser(power: ConduitInfo) -> ConduitInfo:
+	assert(power in [ConduitInfo.LASER_LEFT_S, ConduitInfo.LASER_RIGHT_S, ConduitInfo.LASER_UP_S, ConduitInfo.LASER_DOWN_S])
+	return (power as int - 10) as ConduitInfo
 
 func laser_sides(power: ConduitInfo) -> Array[Vector2i]:
 	match power:
-		ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN:
+		ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN, ConduitInfo.LASER_UP_S, ConduitInfo.LASER_DOWN_S:
 			return [Vector2i.LEFT, Vector2i.RIGHT]
-		ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT:
+		ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_LEFT_S, ConduitInfo.LASER_RIGHT_S:
 			return [Vector2i.UP, Vector2i.DOWN]
 	return []
 
-func send_laser_from(coords: Vector2i, power: ConduitInfo):
+func is_super(power: ConduitInfo) -> bool:
+	return power in [
+		ConduitInfo.LASER_LEFT_S, ConduitInfo.LASER_DOWN_S, ConduitInfo.LASER_RIGHT_S, ConduitInfo.LASER_UP_S,
+		ConduitInfo.LEFT_PS, ConduitInfo.RIGHT_PS, ConduitInfo.UP_PS, ConduitInfo.DOWN_PS
+	]
+
+func send_laser_from(coords: Vector2i, power: ConduitInfo, sup: bool):
 	var laser_dir := power_to_dir(power)
 	var next_laser_pos := coords + laser_dir
-	var laser_to_set := power_to_laser(power)
-	while get_power(next_laser_pos) == ConduitInfo.EMPTY and coords_in_map(next_laser_pos):
+	var laser_to_set := power_to_laser(power, sup)
+	var laser_can_remove := infra_laser(laser_to_set) if sup else super_laser(laser_to_set)
+	while get_power(next_laser_pos) in [ConduitInfo.EMPTY, laser_can_remove] and coords_in_map(next_laser_pos):
 		set_power(next_laser_pos, laser_to_set)
 		next_laser_pos += laser_dir
 	if get_power(next_laser_pos) == laser_to_set:
@@ -264,14 +373,12 @@ func send_laser_from(coords: Vector2i, power: ConduitInfo):
 func remove_laser_from(coords: Vector2i, power: ConduitInfo):
 	var laser_dir := power_to_dir(power)
 	var next_laser_pos := coords + laser_dir
-	var laser_to_erase := power_to_laser(power)
+	var laser_to_erase := power_to_laser(power, false)
 	var sides_to_check := laser_sides(laser_to_erase)
-	print("START REMOVE LASER")
-	while get_power(next_laser_pos) == laser_to_erase:
+	while get_power(next_laser_pos) in [laser_to_erase, super_laser(laser_to_erase)]:
 		set_power(next_laser_pos, ConduitInfo.EMPTY)
 		for side in sides_to_check:
 			conduit_update(next_laser_pos + side)
-		print(next_laser_pos)
 		next_laser_pos += laser_dir
 	conduit_update(next_laser_pos)
 
@@ -284,6 +391,14 @@ func open_door(coords: Vector2i):
 		else:
 			conduit_update(neigh)
 
+func activate_source_at(coords: Vector2i):
+	set_cell(coords, 1, Vector2i(13, 0))
+	%NegativeLayer.erase_cell(coords)
+	%XRayLayer.erase_cell(coords)
+	set_power(coords, ConduitInfo.SOURCE)
+	for neighbor in get_surrounding_cells(coords):
+		conduit_update(neighbor)
+
 func conduit_update(coords: Vector2i):
 	var power := get_power(coords)
 	match power:
@@ -293,27 +408,84 @@ func conduit_update(coords: Vector2i):
 		
 		# Unpowered Arrow
 		ConduitInfo.LEFT, ConduitInfo.DOWN, ConduitInfo.RIGHT, ConduitInfo.UP:
+			var sup := is_super_power_incoming(coords)
 			if is_power_incoming(coords):  # Power Up
-				set_power(coords, power_up_arrow(power))
-				send_laser_from(coords, power)
+				set_power(coords, power_up_arrow(power, sup))
+				send_laser_from(coords, power, sup)
 		
 		# Powered Arrow
 		ConduitInfo.LEFT_P, ConduitInfo.DOWN_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P:
-			if is_power_incoming(coords): # Still powered, recheck that laser was sent
-				if get_power(coords + power_to_dir(power)) == ConduitInfo.EMPTY:
-					send_laser_from(coords, power)
+			if is_super_power_incoming(coords):  # Upgrade to super power
+				set_power(coords, power_up_arrow(power_down_arrow(power, false), true))
+				if get_power(coords + power_to_dir(power)) in [ConduitInfo.EMPTY, power_to_laser(power, false)]:
+					send_laser_from(coords, power, true)
+			elif is_power_incoming(coords):  # Still powered, recheck that laser was sent
+				if get_power(coords + power_to_dir(power)) in [ConduitInfo.EMPTY, super_laser(power_to_laser(power, false))]:
+					send_laser_from(coords, power, false)
 			else:  # Power Down
-				set_power(coords, power_down_arrow(power))
+				set_power(coords, power_down_arrow(power, false))
+				remove_laser_from(coords, power)
+		
+		# Super Powered Arrow
+		ConduitInfo.LEFT_PS, ConduitInfo.DOWN_PS, ConduitInfo.RIGHT_PS, ConduitInfo.UP_PS:
+			if is_super_power_incoming(coords):  # Still super powered, recheck that laser was sent
+				if get_power(coords + power_to_dir(power)) in [ConduitInfo.EMPTY, power_to_laser(power, false)]:
+					send_laser_from(coords, power, true)
+			elif is_power_incoming(coords):  # Downgrade to normal power
+				set_power(coords, power_up_arrow(power_down_arrow(power, true), false))
+				if get_power(coords + power_to_dir(power)) in [ConduitInfo.EMPTY, super_laser(power_to_laser(power, false))]:
+					send_laser_from(coords, power, false)
+			else:  # Power Down
+				set_power(coords, power_down_arrow(power, true))
 				remove_laser_from(coords, power)
 		
 		# Laser
-		ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN:
+		ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN,\
+		ConduitInfo.LASER_LEFT_S, ConduitInfo.LASER_RIGHT_S, ConduitInfo.LASER_UP_S, ConduitInfo.LASER_DOWN_S:
 			# Should not need to recheck its source
 			# Only recheck front laser
 			if get_power(coords + power_to_dir(power)) != power:
-				send_laser_from(coords, power)
+				send_laser_from(coords, power, is_super(power))
 		
 		# Doors
 		ConduitInfo.OPENABLE:
 			if is_power_incoming(coords):
 				open_door(coords)
+		
+		# Lights
+		ConduitInfo.LIGHT_OFF:
+			if is_power_incoming(coords):
+				set_cell(coords, 1, Vector2i(13, 4))
+				set_power(coords, ConduitInfo.LIGHT_ON)
+				lights[coords].visible = true
+		ConduitInfo.LIGHT_ON:
+			if not is_power_incoming(coords):
+				set_cell(coords, 1, Vector2i(13, 3))
+				set_power(coords, ConduitInfo.LIGHT_OFF)
+				lights[coords].visible = false
+		
+		# Prism
+		ConduitInfo.PRISM:
+			# Recheck all 4 directions
+			for laser in [ConduitInfo.LASER_LEFT, ConduitInfo.LASER_RIGHT, ConduitInfo.LASER_UP, ConduitInfo.LASER_DOWN]:
+				var outgoing_dir = power_to_dir(laser)
+				var laser_s = super_laser(laser)
+				if get_power(coords + outgoing_dir) in [laser, ConduitInfo.EMPTY]:
+					if get_power(coords - outgoing_dir) in [laser, laser_s, ConduitInfo.SOURCE]:
+						send_laser_from(coords, laser_s, true)
+				elif get_power(coords + outgoing_dir) == laser_s:
+					if get_power(coords - outgoing_dir) not in [laser, laser_s, ConduitInfo.SOURCE]:
+						remove_laser_from(coords, laser_s)
+		
+		# Crystallizer
+		ConduitInfo.CRYSTALLIZER:
+			call_deferred("create_crystal")
+
+func create_crystal():
+	if not last_gem and is_power_incoming(crystallizer_pos):
+		last_gem = gem_object.instantiate()
+		add_sibling(last_gem)
+		last_gem.global_position = to_global(map_to_local(crystallizer_pos))
+
+func _on_crystallizer_timer_timeout() -> void:
+	call_deferred("create_crystal")

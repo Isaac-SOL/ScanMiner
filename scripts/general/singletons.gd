@@ -9,3 +9,4 @@ var labels: Node2D
 var shaker: Shaker2D
 var world: Node2D
 var tilemap: WorldTileMap
+var companion: Companion

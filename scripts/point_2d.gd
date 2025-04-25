@@ -11,7 +11,10 @@ var direction: Vector2 = Vector2.ZERO
 func start_anim(temp: float = 1.0, dir: Vector2 = Vector2.ZERO):
 	direction = dir
 	time = 0.0
-	modulate = temp_gradient.sample(temp)
+	if temp > 1.1:
+		modulate = Color.from_hsv(randf(), 1.0, 1.0)
+	else:
+		modulate = temp_gradient.sample(temp)
 	visible = true
 
 func _process(delta: float) -> void:

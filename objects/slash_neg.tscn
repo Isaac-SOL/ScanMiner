@@ -46,7 +46,7 @@ position = Vector2(-4, -10)
 
 [node name="CompanionDetector" type="Area2D" parent="."]
 collision_layer = 4
-collision_mask = 0
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CompanionDetector"]
 position = Vector2(-4, -1)

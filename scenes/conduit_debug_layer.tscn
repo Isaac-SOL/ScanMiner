@@ -16,10 +16,32 @@ texture = ExtResource("1_7nrt2")
 14:15/0 = 0
 14:15/0/custom_data_0 = Vector2i(0, -1)
 15:15/0 = 0
+14:8/0 = 0
+14:8/0/custom_data_0 = Vector2i(-1, 0)
+14:8/0/custom_data_1 = true
+14:9/0 = 0
+14:9/0/custom_data_0 = Vector2i(0, 1)
+14:9/0/custom_data_1 = true
+14:10/0 = 0
+14:10/0/custom_data_0 = Vector2i(1, 0)
+14:10/0/custom_data_1 = true
+14:11/0 = 0
+14:11/0/custom_data_0 = Vector2i(0, -1)
+14:11/0/custom_data_1 = true
+15:11/0 = 0
+15:11/0/custom_data_1 = true
+15:10/0 = 0
+15:10/0/custom_data_1 = true
+15:9/0 = 0
+15:9/0/custom_data_1 = true
+15:8/0 = 0
+15:8/0/custom_data_1 = true
 
 [sub_resource type="TileSet" id="TileSet_rakfs"]
 custom_data_layer_0/name = "laser_dir"
 custom_data_layer_0/type = 6
+custom_data_layer_1/name = "super"
+custom_data_layer_1/type = 1
 sources/0 = SubResource("TileSetAtlasSource_ltgtb")
 
 [node name="ConduitDebugLayer" type="TileMapLayer"]

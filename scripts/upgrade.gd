@@ -22,4 +22,5 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is Companion:
 		body.add_mode(added_mode)
+		activated.emit()
 		queue_free()
