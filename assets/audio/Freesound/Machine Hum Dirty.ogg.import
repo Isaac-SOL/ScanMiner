@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://4socxawbyy06"
+path="res://.godot/imported/Machine Hum Dirty.ogg-f281d6474135ef67026200a464bc5c88.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Machine Hum Dirty.ogg"
+dest_files=["res://.godot/imported/Machine Hum Dirty.ogg-f281d6474135ef67026200a464bc5c88.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

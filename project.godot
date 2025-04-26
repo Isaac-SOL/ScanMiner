@@ -89,6 +89,7 @@ esc={
 2d_physics/layer_3="WorldDmg"
 2d_physics/layer_5="Negative World"
 2d_physics/layer_6="Negative Gem"
+2d_physics/layer_9="Sounds"
 
 [rendering]
 

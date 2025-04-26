@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bjr71d4kcrm11"
+path="res://.godot/imported/Computer Startup.ogg-14f1af1ae5c3eba7d512a3d11e4ec2be.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Computer Startup.ogg"
+dest_files=["res://.godot/imported/Computer Startup.ogg-14f1af1ae5c3eba7d512a3d11e4ec2be.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

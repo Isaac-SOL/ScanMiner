@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://di4lmm00ssq3i"]
+[gd_scene load_steps=41 format=3 uid="uid://di4lmm00ssq3i"]
 
 [ext_resource type="Script" uid="uid://cqacoi816t208" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://ernn5pinxlwr" path="res://objects/player_character.tscn" id="1_o5qli"]
@@ -23,9 +23,25 @@
 [ext_resource type="PackedScene" uid="uid://cturqs2ilfv3w" path="res://objects/neg_portal.tscn" id="14_jscy8"]
 [ext_resource type="Shader" uid="uid://dpcocrkh57g0v" path="res://shaders_mats/negative.gdshader" id="17_yc10j"]
 [ext_resource type="FontFile" uid="uid://bk1vus2c1a6qb" path="res://assets/fonts/Kenney Pixel.ttf" id="20_pm3ni"]
+[ext_resource type="Script" uid="uid://ifqmwcdk6q37" path="res://scripts/echo_text_label_controller.gd" id="20_y6deb"]
 
 [sub_resource type="Environment" id="Environment_choun"]
 background_mode = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pm3ni"]
+size = Vector2(160, 287)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y6deb"]
+size = Vector2(278, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_og1vs"]
+size = Vector2(227, 223)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2wyq8"]
+size = Vector2(278, 404)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vxglm"]
+size = Vector2(778, 599)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_85g3d"]
 viewport_path = NodePath("SubViewport")
@@ -96,7 +112,7 @@ texture_filter = 1
 [node name="PlayerCharacter" parent="World" node_paths=PackedStringArray("ui_text") instance=ExtResource("1_o5qli")]
 unique_name_in_owner = true
 z_index = 2
-ui_text = NodePath("../../CanvasLayer/EchoTextLabel")
+ui_text = NodePath("../../CanvasLayer/EchoTextLabels")
 
 [node name="ThermalBlackBG" type="Sprite2D" parent="World/PlayerCharacter"]
 modulate = Color(0, 0, 0, 1)
@@ -230,6 +246,48 @@ position = Vector2(945, 847)
 
 [node name="MapAudio" type="Node2D" parent="World"]
 
+[node name="AudioAreas" type="Node2D" parent="World"]
+
+[node name="Area2D" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(-549, -298)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D"]
+position = Vector2(54, -69.5)
+shape = SubResource("RectangleShape2D_pm3ni")
+
+[node name="Area2D2" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(150, -574)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D2"]
+position = Vector2(58, -3)
+shape = SubResource("RectangleShape2D_y6deb")
+
+[node name="Area2D3" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(659, -885)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D3"]
+position = Vector2(63.5, 5.5)
+shape = SubResource("RectangleShape2D_og1vs")
+
+[node name="Area2D4" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(855, -14)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D4"]
+position = Vector2(89, 96)
+shape = SubResource("RectangleShape2D_2wyq8")
+
+[node name="Area2D5" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(-1236, 618)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D5"]
+position = Vector2(339, 193.5)
+shape = SubResource("RectangleShape2D_vxglm")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ShadowMixer" type="ColorRect" parent="CanvasLayer"]
@@ -259,11 +317,47 @@ material = SubResource("ShaderMaterial_jscy8")
 offset_right = 640.0
 offset_bottom = 360.0
 
-[node name="EchoTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+[node name="EchoTextLabels" type="Control" parent="CanvasLayer"]
 unique_name_in_owner = true
+texture_filter = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("20_y6deb")
+
+[node name="EchoTextLabel1" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
 visible = false
 visibility_layer = 5
-texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(320, 180)
+theme_override_colors/default_color = Color(0, 0.878431, 0.0784314, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/line_separation = 5
+theme_override_fonts/normal_font = ExtResource("20_pm3ni")
+text = "Lorem Ipsum Dolor Sit Amet
+Nec Mergitur"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_jbj1t")
+fade_time = 1.5
+metadata/_edit_use_anchors_ = true
+
+[node name="EchoTextLabel2" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
+visible = false
+visibility_layer = 5
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -282,8 +376,75 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("14_jbj1t")
 fade_time = 1.5
-stay_time = 4.0
-min_time_diff = 0.5
+
+[node name="EchoTextLabel3" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
+visible = false
+visibility_layer = 5
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(320, 180)
+theme_override_colors/default_color = Color(0, 0.878431, 0.0784314, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/line_separation = 5
+theme_override_fonts/normal_font = ExtResource("20_pm3ni")
+text = "Lorem Ipsum Dolor Sit Amet
+Nec Mergitur"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_jbj1t")
+fade_time = 1.5
+
+[node name="EchoTextLabel4" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
+visible = false
+visibility_layer = 5
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(320, 180)
+theme_override_colors/default_color = Color(0, 0.878431, 0.0784314, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/line_separation = 5
+theme_override_fonts/normal_font = ExtResource("20_pm3ni")
+text = "Lorem Ipsum Dolor Sit Amet
+Nec Mergitur"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_jbj1t")
+fade_time = 1.5
+
+[node name="EchoTextLabel5" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
+visible = false
+visibility_layer = 5
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(320, 180)
+theme_override_colors/default_color = Color(0, 0.878431, 0.0784314, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/line_separation = 5
+theme_override_fonts/normal_font = ExtResource("20_pm3ni")
+text = "Lorem Ipsum Dolor Sit Amet
+Nec Mergitur"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_jbj1t")
+fade_time = 1.5
 
 [node name="SubViewport" type="SubViewport" parent="."]
 canvas_item_default_texture_filter = 0
@@ -349,4 +510,14 @@ grow_vertical = 2
 [connection signal="activated" from="World/Companion" to="SubViewport/WorldShadow/CompanionLight" method="set_visible" binds= [true]]
 [connection signal="upgradeable" from="World/Companion" to="." method="upgrade_companion"]
 [connection signal="companion_arrows_set" from="World/TileMapLayer" to="World/Companion" method="activate"]
-[connection signal="echo_hit" from="World/TileMapLayer" to="CanvasLayer/EchoTextLabel" method="display_multi_text"]
+[connection signal="echo_hit" from="World/TileMapLayer" to="CanvasLayer/EchoTextLabels" method="display_multi_text"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D" to="." method="_on_audio_area_body_exited"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D2" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D2" to="." method="_on_audio_area_body_exited"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D3" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D3" to="." method="_on_audio_area_body_exited"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D4" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D4" to="." method="_on_audio_area_body_exited"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D5" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D5" to="." method="_on_audio_area_body_exited"]

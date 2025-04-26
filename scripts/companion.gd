@@ -13,6 +13,10 @@ var unlocked_modes: Array[bool] = [true, false, false]
 var mode_position: int = 0
 var carrying_gem: Gem
 var upgraded: bool = false
+var mode_sounds: Array[AudioStreamPlayer]
+
+func _ready() -> void:
+	mode_sounds = [%Turnoff, %RadioStart, %ThermalStart]
 
 func _process(delta: float) -> void:
 	if active and Singletons.player:
@@ -31,21 +35,37 @@ func _process(delta: float) -> void:
 			if laser_dir != Vector2i.ZERO and laser_super:
 				upgraded = true
 				upgradeable.emit()
+				%LevelupParticles.emitting = true
+				%BaseSprite.visible = false
+				%AdvSprite.visible = true
+				await %LevelupParticles.finished
+				%LevelupAudio.play()
+				play_levelup_anim()
 
 func activate():
 	active = true
-	$Sprite2D.modulate = Color.WHITE
+	%BaseSprite.modulate = Color.WHITE
+	%LevelupParticles.emitting = true
+	%LaserAudio.play()
 	activated.emit()
+	await %LevelupParticles.finished
+	%LevelupAudio.play()
 
 func add_mode(new_mode: Main.VisionMode):
 	unlocked_modes[modes.find(new_mode)] = true
 	%PingSprite.visible = true
+	%LevelupParticles.emitting = true
+	%LaserAudio.play()
+	await %LevelupParticles.finished
+	%LevelupAudio.play()
+	play_levelup_anim()
 
 func on_hit():
 	mode_position = (mode_position + 1) % unlocked_modes.size()
 	while not unlocked_modes[mode_position]:
 		mode_position = (mode_position + 1) % unlocked_modes.size()
 	Singletons.main.set_vision(modes[mode_position])
+	mode_sounds[mode_position].play()
 	%PingSprite.visible = false
 
 func enter_negative_world():
@@ -61,3 +81,9 @@ func start_carry_gem(new_gem: Gem):
 	if carrying_gem:
 		carrying_gem.on_hit()
 	carrying_gem = new_gem
+
+func play_levelup_anim():
+	%LevelupAnim.visible = true
+	%LevelupAnim.play("levelup")
+	await %LevelupAnim.animation_finished
+	%LevelupAnim.visible = false

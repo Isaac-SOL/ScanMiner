@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://beuy5tn7ikv0j"]
+
+[ext_resource type="AudioStream" uid="uid://daieecpd5b0hb" path="res://assets/audio/Freesound/Dehumidifier Hum.ogg" id="1_8p1ve"]
+
+[node name="LightAudio" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_8p1ve")
+autoplay = true
+max_distance = 150.0
+attenuation = 0.392292
+panning_strength = 1.5
+area_mask = 256

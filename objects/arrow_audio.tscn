@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://bjc6tjbtedelp"]
 
 [ext_resource type="Script" uid="uid://cuepo1a6pk274" path="res://scripts/arrow_audio.gd" id="1_u4t8m"]
-[ext_resource type="AudioStream" uid="uid://8ngeaekjxxod" path="res://assets/audio/gear.ogg" id="2_i7hly"]
-[ext_resource type="AudioStream" uid="uid://bpo2egs1u7l2p" path="res://assets/audio/KenneySpace/forceField_000.ogg" id="3_4w6nd"]
+[ext_resource type="AudioStream" uid="uid://cg0g32avkcj6r" path="res://assets/audio/Freesound/Gear Spinning.ogg" id="2_i7hly"]
+[ext_resource type="AudioStream" uid="uid://c8pao2orid2b6" path="res://assets/audio/Freesound/Death Ray.ogg" id="3_4w6nd"]
 
 [node name="ArrowAudio" type="Node2D"]
 script = ExtResource("1_u4t8m")
@@ -10,17 +10,20 @@ script = ExtResource("1_u4t8m")
 [node name="TurnAudio" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("2_i7hly")
-volume_db = -8.0
-max_distance = 450.0
+volume_db = -4.0
+max_distance = 350.0
 attenuation = 0.329877
 max_polyphony = 2
 panning_strength = 2.0
+area_mask = 256
 
 [node name="PowerAudio" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("3_4w6nd")
-volume_db = -8.0
+volume_db = -4.0
 pitch_scale = 1.2
-max_distance = 450.0
+max_distance = 350.0
 attenuation = 0.329877
 max_polyphony = 2
+panning_strength = 2.0
+area_mask = 256

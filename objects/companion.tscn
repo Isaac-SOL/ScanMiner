@@ -1,8 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://bcw3t6f4ey83p"]
+[gd_scene load_steps=18 format=3 uid="uid://bcw3t6f4ey83p"]
 
 [ext_resource type="Script" uid="uid://dsvvfnflwguag" path="res://scripts/companion.gd" id="1_iaa6a"]
 [ext_resource type="Texture2D" uid="uid://btp8rx8tv4tmi" path="res://assets/textures/companion.png" id="1_xp6ly"]
+[ext_resource type="Texture2D" uid="uid://cx6ootsdtg555" path="res://assets/textures/companion2.png" id="3_1bj1r"]
 [ext_resource type="Texture2D" uid="uid://wlwsad6r7vrt" path="res://assets/textures/companion_ping.png" id="3_btfyi"]
+[ext_resource type="PackedScene" uid="uid://t6q83num1k7d" path="res://objects/levelup_anim.tscn" id="4_bj5vf"]
+[ext_resource type="AudioStream" uid="uid://nm1at2djfxxa" path="res://assets/audio/levelup.ogg" id="5_n23dr"]
+[ext_resource type="AudioStream" uid="uid://dfcjd4johl5o5" path="res://assets/audio/KenneySpace/laserLarge_001.ogg" id="6_dc5gl"]
+[ext_resource type="AudioStream" uid="uid://dopmkqe7ng454" path="res://assets/audio/ThermalStart.ogg" id="7_l5ll1"]
+[ext_resource type="AudioStream" uid="uid://de4b5ocyb4pgl" path="res://assets/audio/RadioStart.ogg" id="8_1bj1r"]
+[ext_resource type="AudioStream" uid="uid://r1kig66d6ghd" path="res://assets/audio/Turnoff.ogg" id="9_7ahh1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bj5vf"]
 atlas = ExtResource("3_btfyi")
@@ -46,6 +53,10 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_bntxm"]
 radius = 4.0
 
+[sub_resource type="Curve" id="Curve_btfyi"]
+_data = [Vector2(0, 0), 0.0, 13.5288, 0, 0, Vector2(0.122378, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.95848, 0.0, 0, 0]
+point_count = 3
+
 [node name="Companion" type="CharacterBody2D"]
 visibility_layer = 5
 collision_layer = 2
@@ -53,11 +64,20 @@ motion_mode = 1
 wall_min_slide_angle = 0.0349066
 script = ExtResource("1_iaa6a")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="BaseSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 modulate = Color(0.7, 0.7, 0.7, 1)
 visibility_layer = 5
 scale = Vector2(2, 2)
 texture = ExtResource("1_xp6ly")
+
+[node name="AdvSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.7, 0.7, 0.7, 1)
+visibility_layer = 5
+scale = Vector2(2, 2)
+texture = ExtResource("3_1bj1r")
 
 [node name="PingSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
@@ -69,3 +89,52 @@ frame_progress = 0.124769
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_bntxm")
+
+[node name="LevelupParticles" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+emitting = false
+amount = 32
+one_shot = true
+explosiveness = 1.0
+randomness = 0.2
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 70.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+radial_accel_min = -36.37
+radial_accel_max = -36.37
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+scale_amount_curve = SubResource("Curve_btfyi")
+color = Color(0.698039, 0, 1, 1)
+
+[node name="LevelupAnim" parent="." instance=ExtResource("4_bj5vf")]
+unique_name_in_owner = true
+visible = false
+visibility_layer = 5
+position = Vector2(0, -16)
+scale = Vector2(2, 2)
+frame = 10
+frame_progress = 1.0
+
+[node name="LevelupAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_n23dr")
+
+[node name="LaserAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("6_dc5gl")
+
+[node name="ThermalStart" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("7_l5ll1")
+
+[node name="RadioStart" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("8_1bj1r")
+
+[node name="Turnoff" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("9_7ahh1")

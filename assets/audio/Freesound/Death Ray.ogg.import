@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c8pao2orid2b6"
+path="res://.godot/imported/Death Ray.ogg-1632c516a3bf546281f2cd86a40ac9ee.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Death Ray.ogg"
+dest_files=["res://.godot/imported/Death Ray.ogg-1632c516a3bf546281f2cd86a40ac9ee.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

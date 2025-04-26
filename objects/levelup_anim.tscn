@@ -1,0 +1,92 @@
+[gd_scene load_steps=14 format=3 uid="uid://t6q83num1k7d"]
+
+[ext_resource type="Texture2D" uid="uid://dnw350ucxwf6j" path="res://assets/textures/levelup.png" id="1_240vl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fgm45"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 0, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dsjnt"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 5, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jq7ch"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 10, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a3xl2"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 15, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qj0v7"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 20, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1w8hi"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 25, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7g4xw"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 30, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c3ihb"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 35, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ne2qs"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 40, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yq531"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 45, 31, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_40x2m"]
+atlas = ExtResource("1_240vl")
+region = Rect2(0, 50, 31, 5)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_whkfy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fgm45")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dsjnt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jq7ch")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a3xl2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qj0v7")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_1w8hi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7g4xw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c3ihb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ne2qs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yq531")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_40x2m")
+}],
+"loop": false,
+"name": &"levelup",
+"speed": 5.0
+}]
+
+[node name="Sprite2D" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_whkfy")
+animation = &"levelup"

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ksn6m0jp5u3e"
+path="res://.godot/imported/Hard Drive Hum.ogg-6b8fbbb670efed7ead1aafccad6b0496.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Hard Drive Hum.ogg"
+dest_files=["res://.godot/imported/Hard Drive Hum.ogg-6b8fbbb670efed7ead1aafccad6b0496.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

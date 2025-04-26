@@ -31,6 +31,9 @@ signal echo_hit(text: Array)
 @export var redstone_particles_object: PackedScene
 @export var arrow_particles_object: PackedScene
 @export var eye_particle_object: PackedScene
+@export var furnace_audio_object: PackedScene
+@export var door_audio_object: PackedScene
+@export var light_audio_object: PackedScene
 
 var hp_grid: Array[Array] = []
 var neg_hp_grid: Array[Array] = []
@@ -97,8 +100,12 @@ func _ready() -> void:
 					create_particles(arrow_particles_object, map_pos)
 				if power_grid[x][y] in [ConduitInfo.SOURCE, ConduitInfo.SOURCE_EMPTY]:
 					var new_particles := create_particles(furnace_particles_object, map_pos)
+					var furnace_audio := create_audio(furnace_audio_object, map_pos)
 					if power_grid[x][y] == ConduitInfo.SOURCE_EMPTY:
 						new_particles.emitting = false
+						furnace_audio.stop()
+				if power_grid[x][y] == ConduitInfo.OPENABLE:
+					create_audio(door_audio_object, map_pos)
 				if update_debug_layer:
 					update_debug_layer_at(map_pos, data.get_custom_data("conduit") as ConduitInfo)
 				if data.get_occluder_polygons_count(0) > 0:
@@ -110,11 +117,13 @@ func _ready() -> void:
 					if power_grid[x][y] in [ConduitInfo.LIGHT_OFF, ConduitInfo.LIGHT_ON] or get_cell_atlas_coords(map_pos) == Vector2i(0, 10):
 						new_light.scale *= 1.5
 						var new_particles := create_particles(redstone_particles_object, map_pos)
+						var light_audio := create_audio(light_audio_object, map_pos)
 						if power_grid[x][y] == ConduitInfo.LIGHT_OFF:
 							new_light.visible = false
 							new_particles.emitting = false
+							light_audio.stop()
 					if get_cell_atlas_coords(map_pos) == Vector2i(4, 0):
-						var new_particles := create_particles(glowstone_particles_object, map_pos)
+						create_particles(glowstone_particles_object, map_pos)
 				if data.get_custom_data("fragile"):
 					%XRayLayer.set_cell(map_pos, 0, XRAY_FRAGILE_POS)
 				if data.get_custom_data("hidden_source"):
@@ -193,7 +202,6 @@ func get_audio(map_pos: Vector2i) -> Node2D:
 	return audios[map_pos]
 
 func update_debug_layer_at(coords: Vector2i, power: ConduitInfo):	if update_debug_layer:
-	print(power)
 	match power:
 		ConduitInfo.LEFT_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P, ConduitInfo.DOWN_P:
 			%ConduitDebugLayer.set_cell(coords, 0, Vector2i(15, 12 + (power as int) - (ConduitInfo.LEFT_P as int)))
@@ -230,6 +238,18 @@ func get_particle_type(map_pos: Vector2i) -> PlayerCharacter.ParticleType:
 		return data.get_custom_data("particle_type") as PlayerCharacter.ParticleType
 	return PlayerCharacter.ParticleType.DIRT
 
+func get_mining_sound_type(map_pos: Vector2i) -> PlayerCharacter.MiningSoundType:
+	var data := get_cell_tile_data(map_pos)
+	if data != null:
+		return data.get_custom_data("mining_type") as PlayerCharacter.MiningSoundType
+	return PlayerCharacter.MiningSoundType.DIRT
+
+func get_footstep_type(map_pos: Vector2i) -> PlayerCharacter.FootstepSoundType:
+	var data: TileData = %BGLayer.get_cell_tile_data(map_pos)
+	if data != null:
+		return data.get_custom_data("type") as PlayerCharacter.FootstepSoundType
+	return PlayerCharacter.FootstepSoundType.DIRT
+
 func erase_cell_multilayer(coords):
 	erase_cell(coords)
 	%XRayLayer.erase_cell(coords)
@@ -245,7 +265,7 @@ func get_hit(coords: Vector2i):
 	# Destruction
 	var hp := get_hp(coords)
 	if hp > 0:
-		Singletons.player.impact()
+		Singletons.player.impact(get_mining_sound_type(coords))
 		if hp < 900:
 			hp -= 1
 			set_hp(coords, hp)
@@ -454,6 +474,7 @@ func activate_source_at(coords: Vector2i):
 	%XRayLayer.erase_cell(coords)
 	set_power(coords, ConduitInfo.SOURCE)
 	particles[coords].emitting = true
+	audios[coords].play()
 	for neighbor in get_surrounding_cells(coords):
 		conduit_update(neighbor)
 
@@ -511,6 +532,7 @@ func conduit_update(coords: Vector2i):
 		ConduitInfo.OPENABLE:
 			if is_power_incoming(coords):
 				open_door(coords)
+				audios[coords].play()
 		
 		# Lights
 		ConduitInfo.LIGHT_OFF:
@@ -519,12 +541,14 @@ func conduit_update(coords: Vector2i):
 				set_power(coords, ConduitInfo.LIGHT_ON)
 				lights[coords].visible = true
 				particles[coords].emitting = true
+				audios[coords].play()
 		ConduitInfo.LIGHT_ON:
 			if not is_power_incoming(coords):
 				set_cell(coords, 1, Vector2i(13, 3))
 				set_power(coords, ConduitInfo.LIGHT_OFF)
 				lights[coords].visible = false
 				particles[coords].emitting = false
+				audios[coords].stop()
 		
 		# Prism
 		ConduitInfo.PRISM:

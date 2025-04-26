@@ -33,7 +33,7 @@
 	],
 	"source_hint_gems": [
 		"Les connecteurs sont pratiques,\nmais ils rendent la zone plus dangereuse à explorer.",
-		"Nous développons des moyens de stockage physique au nord d'ici,\nplus faciles à transporter."
+		"Nous développons des moyens de stockage physique\nau nord d'ici,\nplus faciles à transporter."
 	],
 	
 	"thermal_entrance": [
@@ -45,7 +45,7 @@
 		"Merci au laboratoire radio.\nÇa n'a pas dû être évident de le transporter\ndepuis l'autre côté de la caverne scintillante."
 	],
 	"thermal_hint_upgrade": [
-		"J'aimerais qu'il détecte\nles sources de chaleur plus éloignées,\nmais apparemment il leur faudrait un nouveau type d'énergie...?"
+		"J'aimerais qu'il détecte\nles sources de chaleur plus éloignées,\nmais apparemment il leur faudrait\nun nouveau type d'énergie...?"
 	],
 	
 	"gems_entrance": [
@@ -66,7 +66,7 @@
 	
 	"radio_hint_thermal": [
 		"Laboratoire Radioscopique, Log #208.\nNous avons envoyé le prototype de scanner thermique\nau nord de la caverne scintillante.",
-		"Nous nous concentrons maintenant sur le prochain type de scanner."
+		"Nous nous concentrons maintenant\nsur le prochain type de scanner."
 	],
 	"radio_desc_hint_upgrade": [
 		"Ce scanner radioscopique devrait nous permettre\nde trouver les aspérités dans la roche plus facilement,\nmais la résolution laisse à désirer...",
@@ -80,7 +80,7 @@
 	
 	"prism_desc": [
 		"Impressionnant !\nCe cristal atypique semble pouvoir agir comme prisme\net déformer nos lasers thermiques.",
-		"Malheureusement, ils contiennent de l'antimatière\net nous n'avons pas encore trouvé de moyer de les transporter.",
+		"Malheureusement, ils contiennent de l'antimatière\net nous n'avons pas encore trouvé de moyen\nde les transporter.",
 		"Merci d'éviter de les casser,\nnous ne savons pas (encore) les reproduire !"
 	],
 	"prism_hint_upgrade": [
@@ -88,7 +88,7 @@
 	],
 	"prism_advanced_entrance": [
 		"Note : Les recherches sur le cristal de phase\nse poursuivent ici.",
-		"Nous avons scellé l'entrée de la salle centrale,\nde telle sorte que seuls le personnel agréé de l'équipe antimatière\npourra entrer."
+		"Nous avons scellé l'entrée de la salle centrale,\nde telle sorte que seuls le personnel agréé\nde l'équipe antimatière\npourra entrer."
 	],
 	"prism_advanced_desc": [
 		"Je crois avoir compris, au moins en partie,\nl'origine de ces prismes.",

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvb0n7v46j827"]
+
+[ext_resource type="AudioStream" uid="uid://cjsluatemayrr" path="res://assets/audio/Freesound/Door Mechanism.ogg" id="1_s52fv"]
+
+[node name="DoorAudio" type="AudioStreamPlayer2D"]
+unique_name_in_owner = true
+stream = ExtResource("1_s52fv")
+volume_db = 2.0
+max_distance = 350.0
+attenuation = 0.329877
+max_polyphony = 2
+panning_strength = 2.0
+area_mask = 256

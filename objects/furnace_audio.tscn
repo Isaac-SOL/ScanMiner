@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckdj24dmjdg1f"]
+
+[ext_resource type="AudioStream" uid="uid://dcs0g8jj2vhg3" path="res://assets/audio/Freesound/Machine Hum 3.ogg" id="1_qydrp"]
+
+[node name="FurnaceAudio" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_qydrp")
+volume_db = -8.0
+autoplay = true
+max_distance = 150.0
+panning_strength = 1.5
+area_mask = 256

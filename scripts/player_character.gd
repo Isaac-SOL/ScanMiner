@@ -1,13 +1,15 @@
 class_name PlayerCharacter extends CharacterBody2D
 
 enum ParticleType { DIRT = 0, STONE, ROCK, METAL, CRYSTAL }
+enum MiningSoundType { DIRT = 0, METAL, CRYSTAL, ECHO }
+enum FootstepSoundType { DIRT = 0, METAL }
 
 @export var move_speed: float = 10
 @export var slash_object: PackedScene
 @export var neg_slash_object: PackedScene
 @export var slash_distance: float = 20
 @export var slash_cooldown: float = 0.5
-@export var ui_text: EchoTextLabel
+@export var ui_text: Control
 
 var direction: Vector2
 var controller_mode: bool = false
@@ -19,6 +21,9 @@ var particles: Array[Array]
 var particles_ping_pong: Array[int] = [0, 0, 0, 0, 0]
 var particles_lock: Array[bool] = [false, false, false, false, false]
 var impact_played: bool = false
+var mining_sound_lock: Array[bool] = [false, false, false, false]
+var mining_sounds: Array[AudioStreamPlayer]
+var footstep_sounds: Array[AudioStreamPlayer]
 
 func _ready() -> void:
 	particles = [
@@ -28,6 +33,8 @@ func _ready() -> void:
 		[%MetalParticles1, %MetalParticles2],
 		[%CrystalParticles1, %CrystalParticles2]
 	]
+	mining_sounds = [%MiningAudioDirt, %MiningAudioMetal, %MiningAudioCrystal, %MiningAudioEcho]
+	footstep_sounds = [%StepsAudioDirt, %StepsAudioMetal]
 
 func _process(delta: float) -> void:
 	smooth_mouse_position = Util.decayv2(smooth_mouse_position, get_global_mouse_position(), 15 * delta)
@@ -41,6 +48,7 @@ func _process(delta: float) -> void:
 		next_slash = slash_cooldown
 		particles_lock = [false, false, false, false, false]
 		impact_played = false
+		mining_sound_lock = [false, false, false, false]
 		slash(get_global_mouse_position() - global_position)
 	# Mouvement pioche
 	%PiochePivot.rotation = Util.decayf(%PiochePivot.rotation, pioche_target_rot, 20 * delta)
@@ -63,6 +71,7 @@ func slash(dir: Vector2):
 	Singletons.world.add_child(new_slash)
 	new_slash.global_position = global_position + dir.normalized() * slash_distance
 	new_slash.global_rotation = global_rotation
+	%WooshAudio.play()
 	pioche_target_rot = -pioche_target_rot
 
 func emit_particles(type: ParticleType, half: bool):
@@ -75,10 +84,17 @@ func emit_particles(type: ParticleType, half: bool):
 		particles_ping_pong[idx] = 1 - particles_ping_pong[idx]
 		particles_lock[idx] = true
 
-func impact():
+func play_mining_sound(type: MiningSoundType):
+	var idx := type as int
+	if not mining_sound_lock[idx]:
+		var s: AudioStreamPlayer = mining_sounds[idx]
+		s.play()
+		mining_sound_lock[idx] = true
+
+func impact(type: MiningSoundType):
+	play_mining_sound(type)
 	if not impact_played:
 		Singletons.shaker.shake(0.6, 0.2)
-		%MiningAudio.play()
 		Util.hitstop(self, 0.1, 0.05)
 		impact_played = true
 
@@ -90,5 +106,6 @@ func exit_negative_world():
 
 func _on_steps_timer_timeout() -> void:
 	if velocity != Vector2.ZERO:
-		%StepsAudio.play()
+		var map_pos := Singletons.tilemap.local_to_map(Singletons.tilemap.to_local(global_position))
+		footstep_sounds[Singletons.tilemap.get_footstep_type(map_pos)].play()
 		%Sprite2D.frame = (%Sprite2D.frame + 1) % %Sprite2D.vframes

@@ -8,8 +8,8 @@ radius = 2.0
 height = 38.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij1xi"]
-radius = 15.0
-height = 38.0
+radius = 16.0
+height = 44.0
 
 [node name="Slash" type="Area2D"]
 modulate = Color(1, 1, 1, 0.588235)

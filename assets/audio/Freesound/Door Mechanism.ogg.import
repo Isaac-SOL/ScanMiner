@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cjsluatemayrr"
+path="res://.godot/imported/Door Mechanism.ogg-a940ed24c6ae32d75d94381370467b6d.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Door Mechanism.ogg"
+dest_files=["res://.godot/imported/Door Mechanism.ogg-a940ed24c6ae32d75d94381370467b6d.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

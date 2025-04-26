@@ -85,6 +85,7 @@ func enter_negative_world():
 	Singletons.player.enter_negative_world()
 	%Companion.enter_negative_world()
 	entering_negative_world.emit()
+	AudioServer.set_bus_effect_enabled(0, 0, true)
 
 func exit_negative_world():
 	negative_world = false
@@ -92,3 +93,12 @@ func exit_negative_world():
 	Singletons.player.exit_negative_world()
 	%Companion.exit_negative_world()
 	exiting_negative_world.emit()
+	AudioServer.set_bus_effect_enabled(0, 0, false)
+
+func _on_audio_area_body_entered(body: Node2D) -> void:
+	if not negative_world:
+		AudioServer.set_bus_effect_enabled(0, 0, true)
+
+func _on_audio_area_body_exited(body: Node2D) -> void:
+	if not negative_world:
+		AudioServer.set_bus_effect_enabled(0, 0, false)

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dcr476k1rgxfk"
+path="res://.godot/imported/Radiator Noise.ogg-9ad4e7095dee679a8991776c705ac974.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Radiator Noise.ogg"
+dest_files=["res://.godot/imported/Radiator Noise.ogg-9ad4e7095dee679a8991776c705ac974.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

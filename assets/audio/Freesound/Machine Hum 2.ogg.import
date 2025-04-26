@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://fewefucc7gyc"
+path="res://.godot/imported/Machine Hum 2.ogg-6a24025ef9081329b66a0bafd3acec26.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Freesound/Machine Hum 2.ogg"
+dest_files=["res://.godot/imported/Machine Hum 2.ogg-6a24025ef9081329b66a0bafd3acec26.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4
