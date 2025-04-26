@@ -1,12 +1,107 @@
-[gd_scene load_steps=6 format=3 uid="uid://ernn5pinxlwr"]
+[gd_scene load_steps=31 format=3 uid="uid://ernn5pinxlwr"]
 
 [ext_resource type="Script" uid="uid://dmd0rkxm84ip0" path="res://scripts/player_character.gd" id="1_h5vi8"]
-[ext_resource type="Texture2D" uid="uid://c3ko5haqw86je" path="res://icon.svg" id="2_erfry"]
 [ext_resource type="PackedScene" uid="uid://bftgmvwclwkei" path="res://objects/slash.tscn" id="2_tb2t4"]
 [ext_resource type="PackedScene" uid="uid://d316xbai8j4q0" path="res://objects/slash_neg.tscn" id="3_tb2t4"]
+[ext_resource type="Texture2D" uid="uid://ce4op2pyw02j4" path="res://assets/textures/littlechara_game_caveexplorer.png" id="4_y8ouv"]
+[ext_resource type="Texture2D" uid="uid://bxrbsw14cj36y" path="res://assets/textures/pioche.png" id="5_fmqqd"]
+[ext_resource type="AudioStream" uid="uid://dw1jcqkum1xg4" path="res://assets/audio/KenneyImpacts/footstep_concrete_000.ogg" id="5_y8ouv"]
+[ext_resource type="AudioStream" uid="uid://buuydgm03jmtt" path="res://assets/audio/KenneyImpacts/footstep_concrete_001.ogg" id="6_fmqqd"]
+[ext_resource type="Texture2D" uid="uid://cderdk4amsew7" path="res://assets/textures/dirt_particles.png" id="6_on7u7"]
+[ext_resource type="Texture2D" uid="uid://c7s8mistyje01" path="res://assets/textures/stone_particles.png" id="7_kdjpf"]
+[ext_resource type="AudioStream" uid="uid://dd88nfim14ch3" path="res://assets/audio/KenneyImpacts/footstep_concrete_002.ogg" id="7_on7u7"]
+[ext_resource type="Texture2D" uid="uid://ch0n5qkdu0irf" path="res://assets/textures/rock_particles.png" id="8_2k76r"]
+[ext_resource type="AudioStream" uid="uid://cjs423nvi8wvd" path="res://assets/audio/KenneyImpacts/footstep_concrete_003.ogg" id="8_kdjpf"]
+[ext_resource type="AudioStream" uid="uid://botc3wmcdwcqc" path="res://assets/audio/KenneyImpacts/footstep_concrete_004.ogg" id="9_2k76r"]
+[ext_resource type="Texture2D" uid="uid://but0uhyv4pxik" path="res://assets/textures/metal_particles.png" id="9_cmwwh"]
+[ext_resource type="Texture2D" uid="uid://cqc62xfyjvbvx" path="res://assets/textures/crystal_particles.png" id="10_bkyfy"]
+[ext_resource type="AudioStream" uid="uid://6lnb5m5eyw6u" path="res://assets/audio/KenneyImpacts/impactPlate_light_000.ogg" id="16_a4ev1"]
+[ext_resource type="AudioStream" uid="uid://5kvxi2tnmaf2" path="res://assets/audio/KenneyImpacts/impactPlate_light_001.ogg" id="17_dantx"]
+[ext_resource type="AudioStream" uid="uid://c36k6aurqt84c" path="res://assets/audio/KenneyImpacts/impactPlate_light_002.ogg" id="18_2jrv6"]
+[ext_resource type="AudioStream" uid="uid://bpjn7pgpvustm" path="res://assets/audio/KenneyImpacts/impactPlate_light_003.ogg" id="19_m01j0"]
+[ext_resource type="AudioStream" uid="uid://6u84ql7tqdq1" path="res://assets/audio/KenneyImpacts/impactPlate_light_004.ogg" id="20_x86y5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tb2t4"]
 radius = 18.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_kdjpf"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 8
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_2k76r"]
+_data = [Vector2(1e-05, 0), 0.0, 19.1013, 0, 0, Vector2(0.126016, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.81701, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_61mte"]
+curve = SubResource("Curve_2k76r")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cmwwh"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 16, 0)
+angle_max = 360.0
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 80.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -30.0
+linear_accel_max = -10.0
+scale_min = 1.5
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_61mte")
+anim_offset_max = 1.0
+collision_use_scale = true
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2k76r"]
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 4
+particles_anim_loop = false
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_61mte"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 16, 0)
+angle_max = 360.0
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 80.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -30.0
+linear_accel_max = -10.0
+scale_min = 1.5
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_61mte")
+anim_offset_max = 1.0
+collision_use_scale = true
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_aj53f"]
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 32
+particles_anim_loop = false
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_61mte"]
+streams_count = 5
+stream_0/stream = ExtResource("5_y8ouv")
+stream_1/stream = ExtResource("6_fmqqd")
+stream_2/stream = ExtResource("7_on7u7")
+stream_3/stream = ExtResource("8_kdjpf")
+stream_4/stream = ExtResource("9_2k76r")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2v6mv"]
+streams_count = 5
+stream_0/stream = ExtResource("16_a4ev1")
+stream_1/stream = ExtResource("17_dantx")
+stream_2/stream = ExtResource("18_2jrv6")
+stream_3/stream = ExtResource("19_m01j0")
+stream_4/stream = ExtResource("20_x86y5")
 
 [node name="PlayerCharacter" type="CharacterBody2D"]
 visibility_layer = 5
@@ -21,10 +116,174 @@ neg_slash_object = ExtResource("3_tb2t4")
 slash_distance = 35.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 visibility_layer = 5
+position = Vector2(2, 0)
 rotation = 1.5708
-scale = Vector2(0.282, 0.282)
-texture = ExtResource("2_erfry")
+scale = Vector2(0.192, 0.192)
+texture = ExtResource("4_y8ouv")
+vframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_tb2t4")
+
+[node name="PiochePivot" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Sprite2D" type="Sprite2D" parent="PiochePivot"]
+z_index = -1
+texture_filter = 1
+position = Vector2(25, 0)
+rotation = 1.57079
+scale = Vector2(2, 2)
+texture = ExtResource("5_fmqqd")
+
+[node name="Particles" type="Node2D" parent="."]
+
+[node name="DirtParticles1" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_kdjpf")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("6_on7u7")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_cmwwh")
+
+[node name="DirtParticles2" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_kdjpf")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("6_on7u7")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_cmwwh")
+
+[node name="StoneParticles1" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("7_kdjpf")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="StoneParticles2" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("7_kdjpf")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="RockParticles1" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("8_2k76r")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="RockParticles2" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("8_2k76r")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="MetalParticles1" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("9_cmwwh")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="MetalParticles2" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_2k76r")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("9_cmwwh")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="CrystalParticles1" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_aj53f")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("10_bkyfy")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="CrystalParticles2" type="GPUParticles2D" parent="Particles"]
+unique_name_in_owner = true
+z_index = -2
+material = SubResource("CanvasItemMaterial_aj53f")
+position = Vector2(35, 0)
+emitting = false
+texture = ExtResource("10_bkyfy")
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_61mte")
+
+[node name="StepsTimer" type="Timer" parent="."]
+wait_time = 0.34
+autostart = true
+
+[node name="StepsAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_61mte")
+volume_db = -16.0
+max_polyphony = 2
+
+[node name="MiningAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_2v6mv")
+volume_db = -12.0
+max_polyphony = 2
+
+[connection signal="timeout" from="StepsTimer" to="." method="_on_steps_timer_timeout"]

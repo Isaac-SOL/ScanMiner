@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cibs0i3rjwogi"]
+
+[ext_resource type="Script" uid="uid://bhpqky0f0cdgf" path="res://scripts/eye_effect.gd" id="1_eqthr"]
+[ext_resource type="Texture2D" uid="uid://ba0auh3q0yyup" path="res://assets/textures/eye.png" id="2_6merp"]
+
+[node name="EyeEffect" type="Node2D"]
+script = ExtResource("1_eqthr")
+vibration = 0.5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture_filter = 2
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_6merp")

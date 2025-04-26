@@ -24,6 +24,13 @@ signal echo_hit(text: Array)
 @export var light_source_parent: Node2D
 @export var light_source_object: PackedScene
 @export var gem_object: PackedScene
+@export var arrow_audio_object: PackedScene
+@export var audio_parent: Node2D
+@export var furnace_particles_object: PackedScene
+@export var glowstone_particles_object: PackedScene
+@export var redstone_particles_object: PackedScene
+@export var arrow_particles_object: PackedScene
+@export var eye_particle_object: PackedScene
 
 var hp_grid: Array[Array] = []
 var neg_hp_grid: Array[Array] = []
@@ -35,6 +42,8 @@ var crystallizer_pos: Vector2i
 var last_gem: Gem
 var lights: Dictionary[Vector2i, PointLight2D] = {}
 var crown_door_opened: bool = false
+var audios: Dictionary[Vector2i, Node2D] = {}
+var particles: Dictionary[Vector2i, Node2D] = {}
 
 const NORMAL_ARROW_LEFT_POS := Vector2i(15, 2)
 const NORMAL_ARROW_RIGHT_POS := Vector2i(15, 0)
@@ -43,9 +52,30 @@ const XRAY_FRAGILE_POS := Vector2i(12, 0)
 const XRAY_SOURCE_POS := Vector2i(12, 1)
 const NEGATIVE_BREAKABLE_POS := Vector2i(12, 0)
 const NEGATIVE_UNBREAKABLE_POS := Vector2i(7, 0)
-const CROWN_LOCK_POSITIONS: Array[Vector2i] = [Vector2i(-39, 5), Vector2i(-39, 3), Vector2i(-39, 1), Vector2i(-39, -1)]
-const CROWN_DOOR_POSITIONS: Array[Vector2i] = [Vector2i(-35, -4), Vector2i(-34, -4), Vector2i(-33, -4)]
-const CROWN_BUTTON_POSITIONS: Array[Vector2i] = [Vector2i(-36, 5), Vector2i(-36, 3), Vector2i(-36, 1), Vector2i(-36, -1)]
+const CROWN_LOCK_POSITIONS: Array[Vector2i] = [Vector2i(-45, -2), Vector2i(-45, -4), Vector2i(-45, -6), Vector2i(-45, -8)]
+const CROWN_DOOR_POSITIONS: Array[Vector2i] = [Vector2i(-43, 1), Vector2i(-43, 2), Vector2i(-43, 3)]
+const CROWN_BUTTON_POSITIONS: Array[Vector2i] = [Vector2i(-42, -2), Vector2i(-42, -4), Vector2i(-42, -6), Vector2i(-42, -8)]
+
+func create_particles(scene: PackedScene, map_pos: Vector2i) -> Node2D:
+	var new_particles: Node2D = scene.instantiate()
+	add_child(new_particles)
+	new_particles.position = map_to_local(map_pos)
+	particles[map_pos] = new_particles
+	return new_particles
+
+func create_audio(scene: PackedScene, map_pos: Vector2i) -> Node2D:
+	var new_audio: Node2D = scene.instantiate()
+	audio_parent.add_child(new_audio)
+	new_audio.global_position = to_global(map_to_local(map_pos))
+	audios[map_pos] = new_audio
+	return new_audio
+
+func create_light(scene: PackedScene, map_pos: Vector2i) -> PointLight2D:
+	var new_light: PointLight2D = scene.instantiate()
+	light_source_parent.add_child(new_light)
+	new_light.global_position = to_global(map_to_local(map_pos))
+	lights[map_pos] = new_light
+	return new_light
 
 func _ready() -> void:
 	rect_offset = get_used_rect().position
@@ -62,17 +92,29 @@ func _ready() -> void:
 				power_grid[x].append(data.get_custom_data("conduit") as ConduitInfo)
 				if power_grid[x][y] == ConduitInfo.CRYSTALLIZER:
 					crystallizer_pos = map_pos
+				if power_grid[x][y] >= ConduitInfo.LEFT and power_grid[x][y] <= ConduitInfo.UP:
+					create_audio(arrow_audio_object, map_pos)
+					create_particles(arrow_particles_object, map_pos)
+				if power_grid[x][y] in [ConduitInfo.SOURCE, ConduitInfo.SOURCE_EMPTY]:
+					var new_particles := create_particles(furnace_particles_object, map_pos)
+					if power_grid[x][y] == ConduitInfo.SOURCE_EMPTY:
+						new_particles.emitting = false
 				if update_debug_layer:
 					update_debug_layer_at(map_pos, data.get_custom_data("conduit") as ConduitInfo)
 				if data.get_occluder_polygons_count(0) > 0:
 					shadow_layer.set_cell(map_pos, 0, SHADOW_OCCLUDER_POS)
+				if not data.get_custom_data("text").is_empty() and data.get_collision_polygons_count(0) > 0:
+					create_particles(eye_particle_object, map_pos)
 				if data.get_custom_data("light"):
-					var new_light: PointLight2D = light_source_object.instantiate()
-					light_source_parent.add_child(new_light)
-					new_light.global_position = to_global(map_to_local(map_pos))
-					lights[map_pos] = new_light
-					if power_grid[x][y] == ConduitInfo.LIGHT_OFF:
-						new_light.visible = false
+					var new_light := create_light(light_source_object, map_pos)
+					if power_grid[x][y] in [ConduitInfo.LIGHT_OFF, ConduitInfo.LIGHT_ON] or get_cell_atlas_coords(map_pos) == Vector2i(0, 10):
+						new_light.scale *= 1.5
+						var new_particles := create_particles(redstone_particles_object, map_pos)
+						if power_grid[x][y] == ConduitInfo.LIGHT_OFF:
+							new_light.visible = false
+							new_particles.emitting = false
+					if get_cell_atlas_coords(map_pos) == Vector2i(4, 0):
+						var new_particles := create_particles(glowstone_particles_object, map_pos)
 				if data.get_custom_data("fragile"):
 					%XRayLayer.set_cell(map_pos, 0, XRAY_FRAGILE_POS)
 				if data.get_custom_data("hidden_source"):
@@ -92,8 +134,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not companion_activated:
-		if get_cell_atlas_coords(Vector2i(2, 21)) == NORMAL_ARROW_LEFT_POS \
-		   and get_cell_atlas_coords(Vector2i(8, 21)) == NORMAL_ARROW_RIGHT_POS:
+		if get_cell_atlas_coords(Vector2i(2, 32)) == NORMAL_ARROW_LEFT_POS \
+		   and get_cell_atlas_coords(Vector2i(8, 32)) == NORMAL_ARROW_RIGHT_POS:
 			companion_arrows_set.emit()
 			companion_activated = true
 
@@ -147,6 +189,9 @@ func get_laser_super(map_pos: Vector2i) -> bool:
 	var data: TileData = %ConduitDebugLayer.get_cell_tile_data(map_pos)
 	return data.get_custom_data("super") if data else false
 
+func get_audio(map_pos: Vector2i) -> Node2D:
+	return audios[map_pos]
+
 func update_debug_layer_at(coords: Vector2i, power: ConduitInfo):	if update_debug_layer:
 	print(power)
 	match power:
@@ -179,6 +224,12 @@ func get_conduit_info(map_pos: Vector2i) -> ConduitInfo:
 		return data.get_custom_data("conduit") as ConduitInfo
 	return ConduitInfo.EMPTY
 
+func get_particle_type(map_pos: Vector2i) -> PlayerCharacter.ParticleType:
+	var data := get_cell_tile_data(map_pos)
+	if data != null:
+		return data.get_custom_data("particle_type") as PlayerCharacter.ParticleType
+	return PlayerCharacter.ParticleType.DIRT
+
 func erase_cell_multilayer(coords):
 	erase_cell(coords)
 	%XRayLayer.erase_cell(coords)
@@ -193,13 +244,17 @@ func erase_cell_multilayer(coords):
 func get_hit(coords: Vector2i):
 	# Destruction
 	var hp := get_hp(coords)
-	if hp > 0 and hp < 900:
-		hp -= 1
-		if hp <= 0:
-			erase_cell_multilayer(coords)
-		else:
+	if hp > 0:
+		Singletons.player.impact()
+		if hp < 900:
+			hp -= 1
 			set_hp(coords, hp)
-		return
+			if hp <= 0:
+				Singletons.player.emit_particles(get_particle_type(coords), false)
+				erase_cell_multilayer(coords)
+			else:
+				Singletons.player.emit_particles(get_particle_type(coords), true)
+			return
 	
 	# Echo stones
 	var data: = get_cell_tile_data(coords)
@@ -207,6 +262,7 @@ func get_hit(coords: Vector2i):
 		var text_id := get_text_id(coords)
 		if not text_id.is_empty():
 			echo_hit.emit(%TextHolder.get_text_json(text_id))
+			particles[coords].reveal()
 			return
 	
 	# Conduits
@@ -282,6 +338,7 @@ func turn_arrow_at(coords: Vector2i, arrow_type: ConduitInfo):
 	else:
 		var next_power := ((power as int - ConduitInfo.LEFT_P + 1) % 4) + ConduitInfo.LEFT_P
 		set_power(coords, next_power)
+	get_audio(coords).play_turn()
 	conduit_update(coords)
 
 func is_power_incoming(coords: Vector2i) -> bool:
@@ -396,6 +453,7 @@ func activate_source_at(coords: Vector2i):
 	%NegativeLayer.erase_cell(coords)
 	%XRayLayer.erase_cell(coords)
 	set_power(coords, ConduitInfo.SOURCE)
+	particles[coords].emitting = true
 	for neighbor in get_surrounding_cells(coords):
 		conduit_update(neighbor)
 
@@ -412,6 +470,8 @@ func conduit_update(coords: Vector2i):
 			if is_power_incoming(coords):  # Power Up
 				set_power(coords, power_up_arrow(power, sup))
 				send_laser_from(coords, power, sup)
+				get_audio(coords).play_powerup()
+				particles[coords].emitting = true
 		
 		# Powered Arrow
 		ConduitInfo.LEFT_P, ConduitInfo.DOWN_P, ConduitInfo.RIGHT_P, ConduitInfo.UP_P:
@@ -458,11 +518,13 @@ func conduit_update(coords: Vector2i):
 				set_cell(coords, 1, Vector2i(13, 4))
 				set_power(coords, ConduitInfo.LIGHT_ON)
 				lights[coords].visible = true
+				particles[coords].emitting = true
 		ConduitInfo.LIGHT_ON:
 			if not is_power_incoming(coords):
 				set_cell(coords, 1, Vector2i(13, 3))
 				set_power(coords, ConduitInfo.LIGHT_OFF)
 				lights[coords].visible = false
+				particles[coords].emitting = false
 		
 		# Prism
 		ConduitInfo.PRISM:

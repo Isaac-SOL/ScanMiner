@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://hf4dryen8gu"]
+
+[sub_resource type="Curve" id="Curve_di2or"]
+_limits = [-200.0, 200.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, -184.218), -301.503, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_adody"]
+_data = [Vector2(0, 0), 0.0, 9.68184, 0, 0, Vector2(0.122378, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.49806, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_slbgn"]
+
+[node name="ArrowParticles" type="CPUParticles2D"]
+emitting = false
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(1, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+linear_accel_min = 1.0
+linear_accel_max = 1.0
+linear_accel_curve = SubResource("Curve_di2or")
+scale_amount_min = 3.0
+scale_amount_max = 5.0
+scale_amount_curve = SubResource("Curve_adody")
+color = Color(1, 0, 0, 1)
+color_initial_ramp = SubResource("Gradient_slbgn")

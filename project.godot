@@ -28,6 +28,7 @@ window/stretch/mode="viewport"
 [file_customization]
 
 folder_colors={
+"res://assets/audio/": "green",
 "res://assets/textures/": "yellow",
 "res://objects/": "orange",
 "res://scenes/": "gray",

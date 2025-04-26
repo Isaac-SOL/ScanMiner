@@ -21,13 +21,18 @@ void fragment() {
 	float factor = mix(shadow_factor_max, shadow_factor_min, s);
 	vec2 nvec = (vec2(n1, n2) - vec2(0.5)) * pixel_size * factor * m * strength;
 	vec2 eff_uv = SCREEN_UV + nvec;
+	vec2 eff_uv2 = SCREEN_UV - nvec;
 	
 	float emitter_dist = length(eff_uv - emitter_position);
+		float emitter_dist2 = length(eff_uv2 - emitter_position);
 	if (emitter_dist > screen_edge) {
 		eff_uv = mix(eff_uv, emitter_position, (emitter_dist - screen_edge) / emitter_dist);
 	}
+	if (emitter_dist2 > screen_edge) {
+		eff_uv2 = mix(eff_uv2, emitter_position, (emitter_dist2 - screen_edge) / emitter_dist2);
+	}
 	
-	vec4 scr = texture(screen, eff_uv);
+	vec4 scr = (texture(screen, eff_uv) + texture(screen, eff_uv2)) / 2.0;
 	
 	float val = 0.299 * scr.r + 0.587 * scr.g + 0.114 * scr.b;
 	val = 1.0 / (1.0 + exp(-(6.0*val) + 3.0));

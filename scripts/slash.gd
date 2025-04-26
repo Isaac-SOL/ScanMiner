@@ -16,8 +16,6 @@ func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		var coords := get_hit_coordinates(body)
 		if not coords.is_empty():
-			Singletons.shaker.shake(0.6, 0.2)
-			Util.hitstop(self, 0.2)
 			for coord in coords:
 				body.get_hit(coord)
 

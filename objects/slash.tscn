@@ -12,7 +12,9 @@ radius = 15.0
 height = 38.0
 
 [node name="Slash" type="Area2D"]
+modulate = Color(1, 1, 1, 0.588235)
 visibility_layer = 5
+z_index = -1
 collision_layer = 4
 script = ExtResource("1_am03g")
 

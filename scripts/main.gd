@@ -9,6 +9,7 @@ var vision_mode := VisionMode.NORMAL
 var has_companion: bool = false
 var xray_shader: ShaderMaterial
 var negative_world: bool = false
+var xray_target_alpha: float = 0.0
 
 func _ready() -> void:
 	# Hide shadow receiver
@@ -39,6 +40,10 @@ func _process(delta: float) -> void:
 	companion_pos /= Vector2(640, 360)
 	companion_pos += Vector2(0.5, 0.5)
 	xray_shader.set_shader_parameter("emitter_position", companion_pos)
+	
+	# Activate/deactivate xray progressively
+	%XRayMixer.modulate.a = Util.decayf(%XRayMixer.modulate.a, xray_target_alpha, 6 * delta)
+	%TileMapLayer.get_node("%XRayLayer").modulate.a = %XRayMixer.modulate.a
 
 func set_vision(new_mode: VisionMode):
 	vision_mode = new_mode
@@ -49,18 +54,19 @@ func set_vision(new_mode: VisionMode):
 		%NegativeMixer.visible = true
 	else:
 		%NegativeMixer.visible = false
+		%XRayMixer.visible = true
 		match vision_mode:
 			VisionMode.NORMAL:
 				get_tree().root.get_viewport().canvas_cull_mask = 1
-				%XRayMixer.visible = false
+				xray_target_alpha = 0.0
 				%ThermalScanner.set_active(false)
 			VisionMode.XRAY:
-				get_tree().root.get_viewport().canvas_cull_mask = 1 | 8
-				%XRayMixer.visible = true
+				# get_tree().root.get_viewport().canvas_cull_mask = 1 | 8
+				xray_target_alpha = 1.0
 				%ThermalScanner.set_active(false)
 			VisionMode.THERMAL:
 				get_tree().root.get_viewport().canvas_cull_mask = 4
-				%XRayMixer.visible = false
+				xray_target_alpha = 0.0
 				%ThermalScanner.set_active(true)
 
 func _on_companion_activated() -> void:

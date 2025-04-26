@@ -46,7 +46,7 @@ static func rand_in_sphere(min_radius: float, max_radius: float) -> Vector3:
 static func hitstop(source: Node, secs: float, amount: float = 0.1):
 	var prev_scale := Engine.time_scale
 	Engine.time_scale = amount
-	await source.get_tree().create_timer(secs * amount).timeout
+	await source.get_tree().create_timer(secs, true, false, true).timeout
 	if Engine.time_scale == amount:
 		Engine.time_scale = prev_scale
 

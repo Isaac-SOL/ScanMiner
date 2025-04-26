@@ -1,7 +1,8 @@
 {
 	"scintil_start": [
 		"Nous commençons notre excavation\ndans une caverne de roches scintillantes.",
-		"Nous allons nous séparer en équipes.\nNotre but premier est de trouver\nune source d'énergie thermique\npour alimenter les machines."
+		"Nous allons nous séparer en équipes.\nNotre but premier est de trouver\nune source d'énergie thermique\npour alimenter les machines.",
+		"Restez près des roches lumineuses et ne vous perdez pas."
 	],
 	"scintil_echo": [
 		"Ces curieuses pierres\nsemblent faire résonner les sons environnants,\ncomme des échos...",
@@ -19,12 +20,12 @@
 		"Nous pourrons stocker et recharger nos scanners ici."
 	],
 	"scanner_hint_thermal": [
-		"Nous sommes en train de développer des outils de scan\nplus adaptés au terrain,\nau laboratoire radioscopique.",
+		"Nous sommes en train de développer\ndes outils de scan\nplus adaptés au terrain,\nau laboratoire radioscopique.",
 		"Des prototypes sont déjà en train d'être testés\nau nord de la caverne scintillante."
 	],
 	
 	"source_help_arrows": [
-		"Ne restez pas devant les connecteurs rotatifs trop longtemps.\nLe flux thermique est invisible mais peut être dangereux.",
+		"Ne restez pas devant\nles connecteurs rotatifs trop longtemps.\nLe flux thermique est invisible\nmais peut être dangereux.",
 		"Ils fonctionnent même sur de très longues distances,\ndonc faites attention."
 	],
 	"source_hint_scanner": [
@@ -48,8 +49,9 @@
 	],
 	
 	"gems_entrance": [
-		"Je me suis encore brûlé en touchant la porte !",
-		"Je comprends qu'on n'ait\nque de l'énergie thermique ici bas,\nmais ça rend la manipulation de toutes les machines\nbeaucoup plus dangereuse !"
+		"Je me suis encore brûlé en cherchant la porte dérobée !",
+		"Je comprends qu'on n'ait\nque de l'énergie thermique ici bas,\nmais ça rend la manipulation de toutes les machines\nbeaucoup plus dangereuse !",
+		"Et puis c'est pas très discret,\nles scans thermiques s'affolent par ici !"
 	],
 	"gems_desc": [
 		"Une gemme ne pourra alimenter\nqu'un générateur auxiliaire\npendant quelques semaines.",
@@ -127,5 +129,8 @@
 	"crown_generator": [
 		"La machine est prête.\nIls nous suffit maintenant d'alimenter les trois points d'entrée\navec des rayons thermiques phasés.",
 		"La couronne perpétuelle\nsera bientôt entre nos mains."
+	],
+	"crown_bravo": [
+		"Bravo."
 	]
 }
