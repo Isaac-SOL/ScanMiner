@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://di4lmm00ssq3i"]
+[gd_scene load_steps=46 format=3 uid="uid://di4lmm00ssq3i"]
 
 [ext_resource type="Script" uid="uid://cqacoi816t208" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://ernn5pinxlwr" path="res://objects/player_character.tscn" id="1_o5qli"]
@@ -21,7 +21,11 @@
 [ext_resource type="PackedScene" uid="uid://d2hl7ndrm128r" path="res://objects/upgrade_xray.tscn" id="13_gqmmt"]
 [ext_resource type="Script" uid="uid://m2gsnj67knaj" path="res://scripts/echo_text_label.gd" id="14_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cturqs2ilfv3w" path="res://objects/neg_portal.tscn" id="14_jscy8"]
+[ext_resource type="AudioStream" uid="uid://dcr476k1rgxfk" path="res://assets/audio/Freesound/Radiator Noise.ogg" id="16_og1vs"]
+[ext_resource type="AudioStream" uid="uid://bjr71d4kcrm11" path="res://assets/audio/Freesound/Computer Startup.ogg" id="17_vxglm"]
 [ext_resource type="Shader" uid="uid://dpcocrkh57g0v" path="res://shaders_mats/negative.gdshader" id="17_yc10j"]
+[ext_resource type="AudioStream" uid="uid://4vidg7ix12wn" path="res://assets/audio/Freesound/Vending MachineHum.ogg" id="18_2f3dj"]
+[ext_resource type="AudioStream" uid="uid://4socxawbyy06" path="res://assets/audio/Freesound/Machine Hum Dirty.ogg" id="19_2f3dj"]
 [ext_resource type="FontFile" uid="uid://bk1vus2c1a6qb" path="res://assets/fonts/Kenney Pixel.ttf" id="20_pm3ni"]
 [ext_resource type="Script" uid="uid://ifqmwcdk6q37" path="res://scripts/echo_text_label_controller.gd" id="20_y6deb"]
 
@@ -41,6 +45,9 @@ size = Vector2(227, 223)
 size = Vector2(278, 404)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vxglm"]
+size = Vector2(778, 599)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2f3dj"]
 size = Vector2(778, 599)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_85g3d"]
@@ -246,6 +253,41 @@ position = Vector2(945, 847)
 
 [node name="MapAudio" type="Node2D" parent="World"]
 
+[node name="AudioEnergySource" type="AudioStreamPlayer2D" parent="World/MapAudio"]
+position = Vector2(1072, 83)
+stream = ExtResource("16_og1vs")
+volume_db = -8.0
+autoplay = true
+max_distance = 350.0
+attenuation = 0.297302
+panning_strength = 0.0
+
+[node name="AudioRadioLab" type="AudioStreamPlayer2D" parent="World/MapAudio"]
+position = Vector2(-896, 812)
+stream = ExtResource("17_vxglm")
+volume_db = -8.0
+autoplay = true
+max_distance = 400.0
+attenuation = 0.297302
+panning_strength = 0.0
+
+[node name="AudioRadioLabMiddle" type="AudioStreamPlayer2D" parent="World/MapAudio"]
+position = Vector2(-896, 946)
+stream = ExtResource("18_2f3dj")
+volume_db = -8.0
+autoplay = true
+max_distance = 200.0
+attenuation = 0.57435
+panning_strength = 0.0
+
+[node name="AudioPortal" type="AudioStreamPlayer2D" parent="World/MapAudio"]
+position = Vector2(945, 847)
+stream = ExtResource("19_2f3dj")
+volume_db = -12.0
+autoplay = true
+max_distance = 230.0
+attenuation = 0.57435
+
 [node name="AudioAreas" type="Node2D" parent="World"]
 
 [node name="Area2D" type="Area2D" parent="World/AudioAreas"]
@@ -287,6 +329,14 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D5"]
 position = Vector2(339, 193.5)
 shape = SubResource("RectangleShape2D_vxglm")
+
+[node name="Area2D6" type="Area2D" parent="World/AudioAreas"]
+position = Vector2(-2189, -93)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/AudioAreas/Area2D6"]
+position = Vector2(339, 193.5)
+shape = SubResource("RectangleShape2D_2f3dj")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -352,7 +402,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("14_jbj1t")
 fade_time = 1.5
-metadata/_edit_use_anchors_ = true
 
 [node name="EchoTextLabel2" type="RichTextLabel" parent="CanvasLayer/EchoTextLabels"]
 visible = false
@@ -521,3 +570,5 @@ grow_vertical = 2
 [connection signal="body_exited" from="World/AudioAreas/Area2D4" to="." method="_on_audio_area_body_exited"]
 [connection signal="body_entered" from="World/AudioAreas/Area2D5" to="." method="_on_audio_area_body_entered"]
 [connection signal="body_exited" from="World/AudioAreas/Area2D5" to="." method="_on_audio_area_body_exited"]
+[connection signal="body_entered" from="World/AudioAreas/Area2D6" to="." method="_on_audio_area_body_entered"]
+[connection signal="body_exited" from="World/AudioAreas/Area2D6" to="." method="_on_audio_area_body_exited"]

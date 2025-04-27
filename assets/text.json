@@ -10,9 +10,13 @@
 	],
 	
 	"corridor_hint_source": [
-		"Il n'y a plus de lumières ici.",
+		"Il n'y a plus de pierres lumineuses ici.",
 		"Nous devrions rebrousser chemin.\nJe crois qu'une autre équipe a trouvé une source d'énergie.",
 		"Nous pourrions rapporter des lampes thermiques\npour illuminer le chemin."
+	],
+	"corridor_hint_scanner": [
+		"Nous sommes en train de raccorder\nle dispositif de recharge des scanners\nau sud de la caverne scintillante.",
+		"Une fois que ce sera fait,\nnous aurons des lumières portatives\nà durée de vie infinie\npour nous aider dans nos recherches !"
 	],
 	
 	"scanner_desc": [

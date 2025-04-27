@@ -9,6 +9,7 @@ var carrying := false
 var moving_to_furnace := false
 var target: Vector2
 var negative: bool = false
+var breaking: bool = false
 
 func _ready() -> void:
 	await get_tree().process_frame
@@ -18,6 +19,8 @@ func _ready() -> void:
 	companion = Singletons.companion
 
 func _process(delta: float) -> void:
+	if breaking:
+		return
 	if companion and not moving_to_furnace:
 		target = companion.global_position
 	if target != Vector2.ZERO:
@@ -40,11 +43,18 @@ func _process(delta: float) -> void:
 			destroy()
 
 func destroy():
+	breaking = true
 	var coords := Singletons.tilemap.local_to_map(Singletons.tilemap.to_local(global_position))
 	if negative:
 		Singletons.tilemap.create_neg_residue(coords)
 	else:
 		Singletons.tilemap.create_pos_residue(coords)
+	%Sprite2D.visible = false
+	%Point2D.visible = false
+	set_deferred("collision_mask", 0)
+	%BreakSound.play()
+	%BreakParticles.emitting = true
+	await %BreakParticles.finished
 	queue_free()
 
 func on_hit():
