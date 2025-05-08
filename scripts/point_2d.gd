@@ -14,6 +14,8 @@ func start_anim(temp: float = 1.0, dir: Vector2 = Vector2.ZERO):
 	if temp > 1.1:
 		modulate = Color.from_hsv(randf(), 1.0, 1.0)
 	else:
+		if temp < 1.0:
+			temp = clampf(temp + randf_range(-0.05, 0.05), 0.0, 1.0)
 		modulate = temp_gradient.sample(temp)
 	visible = true
 
