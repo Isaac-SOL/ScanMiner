@@ -33,11 +33,11 @@
 		"Ils fonctionnent même sur de très longues distances,\ndonc faites attention."
 	],
 	"source_hint_scanner": [
-		"Avec ça, nous pourrons alimenter la base des scanners\nau sud de la caverne scintillante."
+		"Avec ça, nous pourrons illuminer le chemin\nau sud de la caverne scintillante."
 	],
 	"source_hint_gems": [
 		"Les connecteurs sont pratiques,\nmais ils rendent la zone plus dangereuse à explorer.",
-		"Nous développons des moyens de stockage physique\nau nord d'ici,\nplus faciles à transporter."
+		"Nous développons des gemmes de stockage d'énergie\nau nord d'ici,\nplus faciles à transporter."
 	],
 	
 	"thermal_entrance": [
@@ -63,9 +63,9 @@
 		"Et faites bien attention à ne pas les casser.\nElles sont très fragiles,\net laissent un résidu potentiellement dangereux au sol."
 	],
 	"gems_hint_anti_crown": [
-		"Ils ont encore besoin de gemmes\nà l'étude de l'anti-espace.",
+		"Ils ont encore besoin de gemmes\nà l'étude de l'anti-monde.",
 		"Tu peux leur en apporter ?\nC'est loiiiin à l'est du laboratoire radioscopique.",
-		"Il en faudra aussi pour le générateur\nde la couronne perpétuelle."
+		"Il en faudra aussi une pour le générateur\nde l'anti-perle, à l'ouest."
 	],
 	
 	"radio_hint_thermal": [
@@ -73,13 +73,18 @@
 		"Nous nous concentrons maintenant\nsur le prochain type de scanner."
 	],
 	"radio_desc_hint_upgrade": [
-		"Ce scanner radioscopique devrait nous permettre\nde trouver les aspérités dans la roche plus facilement,\nmais la résolution laisse à désirer...",
+		"Ce scanner radioscopique devrait nous permettre\nde trouver les roches moins dures plus facilement,\nmais la résolution laisse à désirer...",
 		"Avec un rayon d'énergie phasé différemment,\nbraqué sur le scanner,\nnous devrions pouvoir en tirer plus de puissance.",
 		"Je crois qu'ils ont eu des résultats concluants à ce sujet\nnon loin de la caverne scintillante."
 	],
 	"radio_hint_crown": [
 		"Je me demande si le scanner radio\npourrait être utilisé pour crocheter\nle code du labo tout à l'ouest.\nJe suis curieux de voir leurs expériences...",
 		"Si seulement il avait une meilleure résolution..."
+	],
+	"radio_hint_neg": [
+		"Laboratoire Radioscopique, Log #548.\nL'équipe antimatière nous demande ENCORE\nde remplacer leur scanner radio.",
+		"Ça fait trois fois !\nQuel genre d'objet ils peuvent bien analyser là-bas !?",
+		"Vu que le stockage des scanners est sur le chemin,\nje vais en profiter pour faire de la maintenance."
 	],
 	
 	"prism_desc": [
@@ -91,14 +96,20 @@
 		"Je me demande lesquels de nos outils\npourraient bénéficier au mieux\nde ce nouveau type de rayon phasé..."
 	],
 	"prism_advanced_entrance": [
-		"Note : Les recherches sur le cristal de phase\nse poursuivent ici.",
-		"Nous avons scellé l'entrée de la salle centrale,\nde telle sorte que seuls le personnel agréé\nde l'équipe antimatière\npourra entrer."
+		"Note : Les recherches sur le cristal d'antimatière\nse poursuivent ici.",
+		"Nous avons scellé l'entrée de la salle centrale,\nde telle sorte que seul le personnel agréé\nde l'équipe antimatière\npourra entrer.",
+		"Si vous avez besoin de leur parler,\nleur bâtiment est au sud de la source thermique,\nmais bonne chance pour arriver à entrer."
 	],
 	"prism_advanced_desc": [
-		"Je crois avoir compris, au moins en partie,\nl'origine de ces prismes.",
+		"Je crois avoir compris, au moins en partie,\nl'origine de ces cristaux.",
 		"Ce sont la réflection dans \"notre monde\"\nde résidus d'énergie thermiques\nlaissés dans \"l'anti-monde\".",
 		"Le même type de résidus qui apparaît\nquand on brise une gemme thermique accidentellement.",
 		"Je me demande si nous pourrions reproduire l'expérience..."
+	],
+	"prism_advanced_desc2": [
+		"Les scanners semblent pouvoir tirer parti efficacement\nde ce nouveau type d'énergie.",
+		"Les fonctions Thermique et Radioscopique,\nnotamment, sont immédiatement plus précises.",
+		"Il suffit de braquer dessus\nun laser thermique phasé\npar un cristal d'antimatière."
 	],
 	
 	"neg_hint": [
@@ -109,7 +120,7 @@
 		"L'objet est dangereux\net manifeste des propriétés exotiques."
 	],
 	"neg_inner": [
-		"Note : Le SAS contient un gaz bivide\nqui nous protège lors de la transition.",
+		"Note : Le SAS contient un gaz bivide\nqui nous protège lors du passage\nà travers le portail.",
 		"Il a un aspect inquiétant\nmais n'est pas dangereux."
 	],
 	"neg_discovery": [
@@ -117,6 +128,10 @@
 		"C'est tout bonnement incroyable.\nJe vais avoir du mal à m'y habituer...",
 		"Imaginez tous les nouveaux champs de recherches\nqui pourront naître de cette simple découverte !",
 		"Je suis déjà curieux de voir\nles fameux cristaux d'antimatière sous ce nouvel angle."
+	],
+	"neg_hint_gems": [
+		"Si le générateur auxiliaire est vide\net que je suis absent,\nvous devrez remplacer la gemme thermique\nvous même.",
+		"Vous pourrez en trouver au cristallisateur,\nde l'autre côté de la source thermique."
 	],
 	
 	"negpearl": [
@@ -135,6 +150,13 @@
 		"La couronne perpétuelle\nsera bientôt entre nos mains."
 	],
 	"crown_bravo": [
-		"Bravo."
+		"Félicitations !",
+		"Un jeu de SaltyIsaac\n\nPlaytesters :\nArkatein\nPopouleto\nManon",
+		"Sprite taupe de popouleto\nSprites blocs de Kenney (modifiés)",
+		"Sons de Freesound.org:\nscampsie, MorneDelport, YleArkisto, dersuperanton,\nNox_Sound, Sanderboah, F.M.Audio, sophiehall3535,\nmannhawks, d.n.audio.uk, duckduckpony, newagesoup,\nBeetlemuse, The_Runner_01, micropolis, CeebFrack, jacko4526.",
+		"Merci d'avoir joué !"
+	],
+	"try_again": [
+		"Bien essayé !\nMais êtes vous capables d'atteindre cet endroit\ndans le monde normal ?"
 	]
 }

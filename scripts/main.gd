@@ -12,11 +12,6 @@ var negative_world: bool = false
 var xray_target_alpha: float = 0.0
 
 func _ready() -> void:
-	# Hide shadow receiver
-	get_tree().root.get_viewport().canvas_cull_mask = 1
-	xray_shader = %XRayMixer.material
-
-func _process(delta: float) -> void:
 	Singletons.main = self
 	Singletons.shaker = %Shaker2D
 	Singletons.world = %World
@@ -24,7 +19,13 @@ func _process(delta: float) -> void:
 	Singletons.player = %PlayerCharacter
 	Singletons.companion = %Companion
 	Singletons.camera = %MainCamera
-			
+	Singletons.joystick_touch_pad = %JoystickTouchPad
+	
+	# Hide shadow receiver
+	get_tree().root.get_viewport().canvas_cull_mask = 1
+	xray_shader = %XRayMixer.material
+
+func _process(delta: float) -> void:
 	#if Input.is_action_just_pressed("act2"):
 		#match vision_mode:
 			#VisionMode.NORMAL:
@@ -48,7 +49,7 @@ func _process(delta: float) -> void:
 func set_vision(new_mode: VisionMode):
 	vision_mode = new_mode
 	if negative_world:
-		get_tree().root.get_viewport().canvas_cull_mask = 1
+		get_tree().root.get_viewport().canvas_cull_mask = 1 | 512
 		%XRayMixer.visible = false
 		%ThermalScanner.set_active(false)
 		%NegativeMixer.visible = true
@@ -96,9 +97,9 @@ func exit_negative_world():
 	AudioServer.set_bus_effect_enabled(0, 0, false)
 
 func _on_audio_area_body_entered(body: Node2D) -> void:
-	if not negative_world:
+	if body is PlayerCharacter and not negative_world:
 		AudioServer.set_bus_effect_enabled(0, 0, true)
 
 func _on_audio_area_body_exited(body: Node2D) -> void:
-	if not negative_world:
+	if body is PlayerCharacter and not negative_world:
 		AudioServer.set_bus_effect_enabled(0, 0, false)

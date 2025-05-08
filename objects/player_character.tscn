@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://ernn5pinxlwr"]
+[gd_scene load_steps=61 format=3 uid="uid://ernn5pinxlwr"]
 
 [ext_resource type="Script" uid="uid://dmd0rkxm84ip0" path="res://scripts/player_character.gd" id="1_h5vi8"]
 [ext_resource type="PackedScene" uid="uid://bftgmvwclwkei" path="res://objects/slash.tscn" id="2_tb2t4"]
@@ -58,7 +58,7 @@ particles_anim_loop = false
 _data = [Vector2(1e-05, 0), 0.0, 19.1013, 0, 0, Vector2(0.126016, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.81701, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_61mte"]
+[sub_resource type="CurveTexture" id="CurveTexture_sdb4b"]
 curve = SubResource("Curve_2k76r")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cmwwh"]
@@ -76,7 +76,7 @@ linear_accel_min = -30.0
 linear_accel_max = -10.0
 scale_min = 1.5
 scale_max = 3.0
-scale_curve = SubResource("CurveTexture_61mte")
+scale_curve = SubResource("CurveTexture_sdb4b")
 anim_offset_max = 1.0
 collision_use_scale = true
 
@@ -85,6 +85,13 @@ particles_animation = true
 particles_anim_h_frames = 4
 particles_anim_v_frames = 4
 particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_albtb"]
+_data = [Vector2(1e-05, 0), 0.0, 19.1013, 0, 0, Vector2(0.126016, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.81701, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_61mte"]
+curve = SubResource("Curve_albtb")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_61mte"]
 particle_flag_disable_z = true

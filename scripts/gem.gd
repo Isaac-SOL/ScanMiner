@@ -58,11 +58,11 @@ func destroy():
 	queue_free()
 
 func on_hit():
-	if not moving_to_furnace:
+	if not moving_to_furnace and not breaking:
 		destroy()
 
 func move_to_furnace(pos: Vector2):
-	if carrying and not moving_to_furnace:
+	if carrying and not moving_to_furnace and not breaking:
 		target = pos
 		collision_mask = 0
 		min_distance = 0

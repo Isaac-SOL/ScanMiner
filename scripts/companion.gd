@@ -7,6 +7,7 @@ signal upgradeable
 @export var max_velocity: float = 200
 @export var min_distance: float = 50
 @export var max_distance: float = 200
+@export var location_info: RichTextLabel
 
 var modes: Array[Main.VisionMode] = [Main.VisionMode.NORMAL, Main.VisionMode.XRAY, Main.VisionMode.THERMAL]
 var unlocked_modes: Array[bool] = [true, false, false]
@@ -14,6 +15,9 @@ var mode_position: int = 0
 var carrying_gem: Gem
 var upgraded: bool = false
 var mode_sounds: Array[AudioStreamPlayer]
+
+const CARDINALS: Array[String] = ["E", "SE", "S", "SO", "O", "NO", "N", "NE"]
+const MODE_NAMES: Array[String] = ["VIS", "RADIO", "IR"]
 
 func _ready() -> void:
 	mode_sounds = [%Turnoff, %RadioStart, %ThermalStart]
@@ -27,6 +31,18 @@ func _process(delta: float) -> void:
 		velocity = weighted_target_vector
 		move_and_slide()
 		
+		# Update location info
+		var angle := fposmod(global_position.angle() + PI/8, TAU)
+		var norm_angle := floori((angle / TAU) * 8) % 8
+		var card := CARDINALS[norm_angle]
+		var dist_blocks := global_position.length() / 32.0
+		if dist_blocks <= 7:
+			card = "C.S."
+		var dist_blocks_str := str(floorf(dist_blocks * 10.0) / 10.0)
+		if Singletons.main.negative_world:
+			dist_blocks_str = "-" + dist_blocks_str + " ?"
+		location_info.text = card + "\n" + "D : " + dist_blocks_str + "\nF : " + MODE_NAMES[mode_position]
+		
 		# Check for super lasers
 		if not upgraded:
 			var detection_coords := Singletons.tilemap.local_to_map(Singletons.tilemap.to_local(global_position))
@@ -38,6 +54,7 @@ func _process(delta: float) -> void:
 				%LevelupParticles.emitting = true
 				%BaseSprite.visible = false
 				%AdvSprite.visible = true
+				%LaserAudio.play()
 				await %LevelupParticles.finished
 				%LevelupAudio.play()
 				play_levelup_anim()
@@ -50,6 +67,7 @@ func activate():
 	activated.emit()
 	await %LevelupParticles.finished
 	%LevelupAudio.play()
+	location_info.visible = true
 
 func add_mode(new_mode: Main.VisionMode):
 	unlocked_modes[modes.find(new_mode)] = true

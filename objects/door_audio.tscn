@@ -6,7 +6,7 @@
 unique_name_in_owner = true
 stream = ExtResource("1_s52fv")
 volume_db = 2.0
-max_distance = 350.0
+max_distance = 450.0
 attenuation = 0.329877
 max_polyphony = 2
 panning_strength = 2.0

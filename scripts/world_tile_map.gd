@@ -14,7 +14,8 @@ enum ConduitInfo {
 	LASER_LEFT_S = 31, LASER_DOWN_S, LASER_RIGHT_S, LASER_UP_S,
 	LEFT_PS = 35, DOWN_PS, RIGHT_PS, UP_PS,
 	OPENABLE = 40,
-	PRISM = 60
+	PRISM = 60,
+	UNOPENABLE_DOOR = 100
 }
 
 signal echo_hit(text: Array)
@@ -31,9 +32,11 @@ signal echo_hit(text: Array)
 @export var redstone_particles_object: PackedScene
 @export var arrow_particles_object: PackedScene
 @export var eye_particle_object: PackedScene
+@export var eye_particle_neg_object: PackedScene
 @export var furnace_audio_object: PackedScene
 @export var door_audio_object: PackedScene
 @export var light_audio_object: PackedScene
+@export var crystallizer_audio_object: PackedScene
 
 var hp_grid: Array[Array] = []
 var neg_hp_grid: Array[Array] = []
@@ -95,6 +98,7 @@ func _ready() -> void:
 				power_grid[x].append(data.get_custom_data("conduit") as ConduitInfo)
 				if power_grid[x][y] == ConduitInfo.CRYSTALLIZER:
 					crystallizer_pos = map_pos
+					create_audio(crystallizer_audio_object, map_pos)
 				if power_grid[x][y] >= ConduitInfo.LEFT and power_grid[x][y] <= ConduitInfo.UP:
 					create_audio(arrow_audio_object, map_pos)
 					create_particles(arrow_particles_object, map_pos)
@@ -104,14 +108,17 @@ func _ready() -> void:
 					if power_grid[x][y] == ConduitInfo.SOURCE_EMPTY:
 						new_particles.emitting = false
 						furnace_audio.stop()
-				if power_grid[x][y] == ConduitInfo.OPENABLE:
+				if power_grid[x][y] in [ConduitInfo.OPENABLE, ConduitInfo.UNOPENABLE_DOOR]:
 					create_audio(door_audio_object, map_pos)
 				if update_debug_layer:
 					update_debug_layer_at(map_pos, data.get_custom_data("conduit") as ConduitInfo)
 				if data.get_occluder_polygons_count(0) > 0:
 					shadow_layer.set_cell(map_pos, 0, SHADOW_OCCLUDER_POS)
-				if not data.get_custom_data("text").is_empty() and data.get_collision_polygons_count(0) > 0:
-					create_particles(eye_particle_object, map_pos)
+				if not data.get_custom_data("text").is_empty():
+					if data.get_collision_polygons_count(0) > 0:
+						create_particles(eye_particle_object, map_pos)
+					else:
+						create_particles(eye_particle_neg_object, map_pos)
 				if data.get_custom_data("light"):
 					var new_light := create_light(light_source_object, map_pos)
 					if power_grid[x][y] in [ConduitInfo.LIGHT_OFF, ConduitInfo.LIGHT_ON] or get_cell_atlas_coords(map_pos) == Vector2i(0, 10):
@@ -305,21 +312,27 @@ func get_hit(coords: Vector2i):
 func _on_negative_layer_hit(coords: Vector2i) -> void:
 	# Destruction
 	var hp := get_neg_hp(coords)
-	if hp > 0 and hp < 900:
-		hp -= 1
-		if hp <= 0:
-			%NegativeLayer.erase_cell(coords)
-			shadow_layer.set_cell(coords, 0, SHADOW_OCCLUDER_POS)
-			set_cell(coords, 1, Vector2i.ZERO)  # Dirt
-			set_hp(coords, 1)
-		else:
+	if hp > 0:
+		Singletons.player.impact(get_mining_sound_type(coords))
+		if hp < 900:
+			hp -= 1
 			set_neg_hp(coords, hp)
+			if hp <= 0:
+				Singletons.player.emit_particles(get_particle_type(coords), false)
+				%NegativeLayer.erase_cell(coords)
+				shadow_layer.set_cell(coords, 0, SHADOW_OCCLUDER_POS)
+				set_cells_terrain_connect([coords], 0, 0)  # Connected Dirt
+				#set_cell(coords, 1, Vector2i.ZERO)  # Dirt
+				set_hp(coords, 1)
+			return
 	
 	# Echo stones
-	if get_cell_tile_data(coords).get_collision_polygons_count(0) == 0:
+	var data: = get_cell_tile_data(coords)
+	if data and data.get_collision_polygons_count(0) == 0:
 		var text_id := get_text_id(coords)
 		if not text_id.is_empty():
 			echo_hit.emit(%TextHolder.get_text_json(text_id))
+			particles[coords].reveal()
 			return
 
 func check_crown_lock():
@@ -327,16 +340,19 @@ func check_crown_lock():
 		for lock_arrow_coords in CROWN_LOCK_POSITIONS:
 			if get_conduit_info(lock_arrow_coords) != ConduitInfo.LEFT:
 				return
+		audios[CROWN_DOOR_POSITIONS[0]].play()
 		for door_coords in CROWN_DOOR_POSITIONS:
 			erase_cell_multilayer(door_coords)
+			set_power(door_coords, ConduitInfo.EMPTY)
+			for neighbor in get_surrounding_cells(door_coords):
+				conduit_update(neighbor)
 		crown_door_opened = true
 
 func create_pos_residue(coords: Vector2i):
 	if not get_cell_tile_data(coords):
 		set_cell(coords, 1, Vector2i(9, 0))
 
-func create_neg_residue(coords: Vector2i, retry: bool = true):
-	# Note: bug when creating right next to an arrow
+func create_neg_residue(coords: Vector2i, retry: bool = true) -> bool:
 	if get_hp(coords) < 900:
 		set_cell(coords, 1, Vector2i(8, 0))
 		set_hp(coords, 1)
@@ -345,6 +361,12 @@ func create_neg_residue(coords: Vector2i, retry: bool = true):
 		set_power(coords, ConduitInfo.PRISM)
 		for neighbor in get_surrounding_cells(coords):
 			conduit_update(neighbor)
+		return true
+	elif retry:
+		for neighbor in get_surrounding_cells(coords):
+			if create_neg_residue(neighbor, false):
+				return true  # Exit at first success
+	return false
 
 func turn_arrow_at(coords: Vector2i, arrow_type: ConduitInfo):
 	var power := get_power(coords)
@@ -363,18 +385,18 @@ func turn_arrow_at(coords: Vector2i, arrow_type: ConduitInfo):
 
 func is_power_incoming(coords: Vector2i) -> bool:
 	var incoming := false
-	incoming = incoming or get_power(coords + Vector2i.UP) in [ConduitInfo.LASER_DOWN, ConduitInfo.SOURCE]
-	incoming = incoming or get_power(coords + Vector2i.DOWN) in [ConduitInfo.LASER_UP, ConduitInfo.SOURCE]
-	incoming = incoming or get_power(coords + Vector2i.RIGHT) in [ConduitInfo.LASER_LEFT, ConduitInfo.SOURCE]
-	incoming = incoming or get_power(coords + Vector2i.LEFT) in [ConduitInfo.LASER_RIGHT, ConduitInfo.SOURCE]
+	incoming = incoming or get_power(coords + Vector2i.UP) in [ConduitInfo.LASER_DOWN, ConduitInfo.SOURCE, ConduitInfo.DOWN_P, ConduitInfo.DOWN_PS]
+	incoming = incoming or get_power(coords + Vector2i.DOWN) in [ConduitInfo.LASER_UP, ConduitInfo.SOURCE, ConduitInfo.UP_P, ConduitInfo.UP_PS]
+	incoming = incoming or get_power(coords + Vector2i.RIGHT) in [ConduitInfo.LASER_LEFT, ConduitInfo.SOURCE, ConduitInfo.LEFT_P, ConduitInfo.LEFT_PS]
+	incoming = incoming or get_power(coords + Vector2i.LEFT) in [ConduitInfo.LASER_RIGHT, ConduitInfo.SOURCE, ConduitInfo.RIGHT_P, ConduitInfo.RIGHT_PS]
 	return incoming or is_super_power_incoming(coords)
 
 func is_super_power_incoming(coords: Vector2i) -> bool:
 	var incoming := false
-	incoming = incoming or get_power(coords + Vector2i.UP) == ConduitInfo.LASER_DOWN_S
-	incoming = incoming or get_power(coords + Vector2i.DOWN) == ConduitInfo.LASER_UP_S
-	incoming = incoming or get_power(coords + Vector2i.RIGHT) == ConduitInfo.LASER_LEFT_S
-	incoming = incoming or get_power(coords + Vector2i.LEFT) == ConduitInfo.LASER_RIGHT_S
+	incoming = incoming or get_power(coords + Vector2i.UP) in [ConduitInfo.LASER_DOWN_S, ConduitInfo.DOWN_PS]
+	incoming = incoming or get_power(coords + Vector2i.DOWN) in [ConduitInfo.LASER_UP_S, ConduitInfo.UP_PS]
+	incoming = incoming or get_power(coords + Vector2i.RIGHT) in [ConduitInfo.LASER_LEFT_S, ConduitInfo.LEFT_PS]
+	incoming = incoming or get_power(coords + Vector2i.LEFT) in [ConduitInfo.LASER_RIGHT_S, ConduitInfo.RIGHT_PS]
 	return incoming
 
 func power_to_dir(power: ConduitInfo) -> Vector2i:
@@ -572,6 +594,7 @@ func create_crystal():
 		last_gem = gem_object.instantiate()
 		add_sibling(last_gem)
 		last_gem.global_position = to_global(map_to_local(crystallizer_pos))
+		audios[crystallizer_pos].play()
 
 func _on_crystallizer_timer_timeout() -> void:
 	call_deferred("create_crystal")

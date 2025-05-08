@@ -7,3 +7,4 @@ func _on_body_entered(body: Node2D) -> void:
 			Singletons.main.exit_negative_world()
 		else:
 			Singletons.main.enter_negative_world()
+		%PortalAudio.play()

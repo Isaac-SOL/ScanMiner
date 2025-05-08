@@ -10,3 +10,4 @@ var shaker: Shaker2D
 var world: Node2D
 var tilemap: WorldTileMap
 var companion: Companion
+var joystick_touch_pad: JoystickTouchPad

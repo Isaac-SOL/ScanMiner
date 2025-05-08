@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://hi7hdupc885h"]
+
+[ext_resource type="AudioStream" uid="uid://74ojd1fmnb7p" path="res://assets/audio/Freesound/Piston.ogg" id="1_w66el"]
+
+[node name="CrystallizerAudio" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_w66el")
+volume_db = -4.0
+autoplay = true
+max_distance = 150.0
+attenuation = 0.297302
+panning_strength = 1.5
+area_mask = 256

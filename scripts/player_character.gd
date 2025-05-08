@@ -26,6 +26,7 @@ var mining_sounds: Array[AudioStreamPlayer]
 var footstep_sounds: Array[AudioStreamPlayer]
 
 func _ready() -> void:
+	touchpad_mode = Util.on_mobile()
 	particles = [
 		[%DirtParticles1, %DirtParticles2],
 		[%StoneParticles1, %StoneParticles2],
@@ -37,26 +38,39 @@ func _ready() -> void:
 	footstep_sounds = [%StepsAudioDirt, %StepsAudioMetal]
 
 func _process(delta: float) -> void:
-	smooth_mouse_position = Util.decayv2(smooth_mouse_position, get_global_mouse_position(), 15 * delta)
-	look_at(smooth_mouse_position)
 	var move_vec := get_move_vector() * move_speed
-	direction = move_vec
 	velocity = move_vec
+	if move_vec != Vector2.ZERO:
+		direction = move_vec
+	if controller_mode or touchpad_mode:
+		smooth_mouse_position = Util.decayv2(smooth_mouse_position, direction, 15 * delta)
+		look_at(global_position + smooth_mouse_position)
+	else:
+		smooth_mouse_position = Util.decayv2(smooth_mouse_position, get_global_mouse_position(), 15 * delta)
+		look_at(smooth_mouse_position)
 	move_and_slide()
 	next_slash -= delta
-	if Input.is_action_just_pressed("act1") and next_slash <= 0.0 and ui_text.displaying.is_empty():
+	if get_action_just_pressed() and next_slash <= 0.0 and ui_text.displaying.is_empty():
 		next_slash = slash_cooldown
 		particles_lock = [false, false, false, false, false]
 		impact_played = false
 		mining_sound_lock = [false, false, false, false]
-		slash(get_global_mouse_position() - global_position)
+		if controller_mode or touchpad_mode:
+			slash(direction)
+		else:
+			slash(get_global_mouse_position() - global_position)
 	# Mouvement pioche
 	%PiochePivot.rotation = Util.decayf(%PiochePivot.rotation, pioche_target_rot, 20 * delta)
 
+func get_action_just_pressed() -> bool:
+	if touchpad_mode:
+		return Singletons.joystick_touch_pad.is_button_just_pressed()
+	else:
+		return Input.is_action_just_pressed("act1")
+
 func get_move_vector() -> Vector2:
 	if touchpad_mode and not controller_mode:
-		return Vector2(0, 0)
-		#return Singletons.joystick_touch_pad.get_joystick_left().normalized()
+		return Singletons.joystick_touch_pad.get_joystick_left().normalized()
 	else:
 		var move_vec := Vector2.ZERO
 		move_vec.y -= Input.get_action_strength("up")
@@ -109,3 +123,9 @@ func _on_steps_timer_timeout() -> void:
 		var map_pos := Singletons.tilemap.local_to_map(Singletons.tilemap.to_local(global_position))
 		footstep_sounds[Singletons.tilemap.get_footstep_type(map_pos)].play()
 		%Sprite2D.frame = (%Sprite2D.frame + 1) % %Sprite2D.vframes
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		controller_mode = false
+	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
+		controller_mode = true

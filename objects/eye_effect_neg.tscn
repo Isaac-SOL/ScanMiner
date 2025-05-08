@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dep34angehney"]
+
+[ext_resource type="Script" uid="uid://bhpqky0f0cdgf" path="res://scripts/eye_effect.gd" id="1_l6hoo"]
+[ext_resource type="Texture2D" uid="uid://eyvgmsceeav2" path="res://assets/textures/eye_neg.png" id="2_l6hoo"]
+
+[node name="EyeEffect" type="Node2D"]
+script = ExtResource("1_l6hoo")
+vibration = 0.5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+visibility_layer = 512
+texture_filter = 2
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_l6hoo")

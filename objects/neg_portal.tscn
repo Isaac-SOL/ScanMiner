@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://cturqs2ilfv3w"]
+[gd_scene load_steps=13 format=3 uid="uid://cturqs2ilfv3w"]
 
 [ext_resource type="Texture2D" uid="uid://niunsng3pvha" path="res://assets/textures/neg_portal.png" id="1_pm1vc"]
 [ext_resource type="Script" uid="uid://bqbg21x1s0xpp" path="res://scripts/neg_portal.gd" id="1_uuw50"]
 [ext_resource type="Texture2D" uid="uid://da0u2j42xbr7r" path="res://assets/textures/neg_protal_2.png" id="3_h7p1i"]
+[ext_resource type="AudioStream" uid="uid://cklgbcey02om7" path="res://assets/audio/Freesound/Portal.ogg" id="4_h7p1i"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8ltdu"]
 atlas = ExtResource("1_pm1vc")
@@ -84,9 +85,15 @@ orbit_velocity_min = 0.03
 orbit_velocity_max = 0.1
 radial_accel_min = -10.0
 radial_accel_max = -10.0
+angle_max = 360.0
 scale_amount_min = 2.0
-scale_amount_max = 2.0
+scale_amount_max = 6.0
 color = Color(0.698039, 0.25098, 0.498039, 1)
 color_ramp = SubResource("Gradient_xd71m")
+
+[node name="PortalAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_h7p1i")
+max_polyphony = 4
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
