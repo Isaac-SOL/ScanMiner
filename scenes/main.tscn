@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ernn5pinxlwr" path="res://objects/player_character.tscn" id="1_o5qli"]
 [ext_resource type="Texture2D" uid="uid://c0h6pxpio0an3" path="res://assets/textures/white.png" id="3_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dteeejg43g0q3" path="res://objects/thermal_scanner.tscn" id="3_ya4ey"]
-[ext_resource type="Script" uid="uid://b038wgl6janrt" path="res://scripts/shaker_2d.gd" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://b038wgl6janrt" path="res://leeklib/shaker_2d.gd" id="4_tbgi4"]
 [ext_resource type="Script" uid="uid://lexfpqm1rjvv" path="res://scripts/lock_rotation.gd" id="4_tefeu"]
 [ext_resource type="Texture2D" uid="uid://btbbcobtiwbua" path="res://assets/textures/neg_bg.png" id="5_pm3ni"]
 [ext_resource type="Shader" uid="uid://cr0b3pvd7afcx" path="res://shaders_mats/xray_mixer.gdshader" id="6_choun"]

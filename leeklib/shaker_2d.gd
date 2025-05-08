@@ -1,3 +1,4 @@
+@icon("res://leeklib/icons/Shaker2D.svg")
 class_name Shaker2D extends Node2D
 
 @export var target_node: Node2D

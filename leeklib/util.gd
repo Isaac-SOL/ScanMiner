@@ -27,21 +27,35 @@ static func rand_on_circle(radius: float) -> Vector2:
 	var angle: float = randf_range(0, TAU)
 	return Vector2(sin(angle), cos(angle)) * radius
 
+## Not uniform (clumped in center)
 static func rand_in_circle(min_radius: float, max_radius: float) -> Vector2:
-	var angle: float = randf_range(0, TAU)
-	var distance: float = randf_range(min_radius, max_radius)
-	return Vector2(sin(angle), cos(angle)) * distance
+	var r: float = randf_range(min_radius, max_radius)
+	return rand_on_circle(r)
+
+## Uniform but randomly more expensive
+static func rand_in_circle_uniform(min_radius: float, max_radius: float) -> Vector2:
+	var res := Vector2.ONE * max_radius * 2
+	while res.length() > max_radius or min_radius > res.length():
+		res = Vector2(randf_range(-1, 1), randf_range(-1, 1))
+	return res
 
 static func rand_on_sphere(radius: float) -> Vector3:
-	# Not uniform for now sorry
-	var base_vector := Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1))
-	return base_vector.normalized() * radius
+	var res := Vector3(randfn(0, 1), randfn(0, 1), randfn(0, 1))
+	if res == Vector3.ZERO:
+		return Vector3.UP
+	return res.normalized() * radius
 
+## Not uniform (clumped in center)
 static func rand_in_sphere(min_radius: float, max_radius: float) -> Vector3:
-	# Not uniform for now sorry
-	var base_vector := Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1))
-	var radius := randf_range(min_radius, max_radius)
-	return base_vector.normalized() * radius
+	var r := randf_range(min_radius, max_radius)
+	return rand_on_sphere(r)
+
+## Uniform but randomly more expensive
+static func rand_in_sphere_uniform(min_radius: float, max_radius: float) -> Vector3:
+	var res := Vector3.ONE * max_radius * 2
+	while res.length() > max_radius or min_radius > res.length():
+		res = Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1))
+	return res
 
 static func hitstop(source: Node, secs: float, amount: float = 0.1):
 	var prev_scale := Engine.time_scale
@@ -52,3 +66,6 @@ static func hitstop(source: Node, secs: float, amount: float = 0.1):
 
 static func on_mobile() -> bool:
 	return OS.has_feature("web_android") or OS.has_feature("web_ios") or OS.has_feature("android") or OS.has_feature("ios")
+
+static func on_web() -> bool:
+	return OS.has_feature("web")

@@ -1,3 +1,4 @@
+@icon("res://leeklib/icons/JoystickTouchpad.svg")
 class_name JoystickTouchPad extends Control
 
 ## Based on screen height
